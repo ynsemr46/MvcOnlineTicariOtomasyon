@@ -1,7 +1,7 @@
 
 # 🧾 MvcOnlineTicariOtomasyon
 
-Yunus Emre Karabayır tarafından geliştirilen bu proje, **ASP.NET MVC** ve **Microsoft SQL Server** teknolojileriyle oluşturulmuş, çok yönlü bir **Online Ticari Otomasyon Sistemi**dir.
+Yunus Emre Karabayır tarafından geliştirilen bu proje,Kahramanmaraş Sütçü İmam Üniversitesi Bilgisayar Programcılığı bitirme projesidir; **ASP.NET MVC** ve **Microsoft SQL Server** teknolojileriyle oluşturulmuş, çok yönlü bir **Online Ticari Otomasyon Sistemi**dir.
 
 ---
 

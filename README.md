@@ -99,23 +99,24 @@ Update-Database
 
 ![Kategori Yönetimi](https://github.com/user-attachments/assets/d1472947-7e9f-41e7-a1d1-eaa97076816f)
 
-#### 🧾 Fatura Yönetimi
+#### 🧾 Ürün Yönetimi
 
-![Fatura Yönetimi](https://github.com/user-attachments/assets/9acfa433-d0b6-47b9-b5fe-894248dc02b3)
+![Ürün Yönetimi](https://github.com/user-attachments/assets/9acfa433-d0b6-47b9-b5fe-894248dc02b3)
 
-#### 📊 Satış Raporu & Grafik
+#### 📊 Fatura/Satış İşlemleri
 
 ![Satış Raporu](https://github.com/user-attachments/assets/a6a1fef1-b9b8-45e6-8d5c-7faf19dc00ca)
 
-#### 🧑‍💼 Personel Paneli
+#### 🧑‍💼 Fatura/Satış Oluşturma
 
-![Personel Paneli](https://github.com/user-attachments/assets/6cf5a6f4-ead5-447b-8786-dc671b5110e7)
+![Fatura satış](https://github.com/user-attachments/assets/6cf5a6f4-ead5-447b-8786-dc671b5110e7)
 
-#### 👤 Admin Bilgileri
+#### 👤 İstatistikler
 
-![Admin Bilgi Paneli](https://github.com/user-attachments/assets/2698ac93-2916-40b6-a5b4-00d42c430316)
+![İstatistikler](https://github.com/user-attachments/assets/2698ac93-2916-40b6-a5b4-00d42c430316)
 
 ---
+
 
 ## 👨‍💻 Geliştirici
 

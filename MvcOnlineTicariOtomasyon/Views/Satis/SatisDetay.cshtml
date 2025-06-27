@@ -1,0 +1,37 @@
+﻿@model List<MvcOnlineTicariOtomasyon.Models.Siniflar.SatisHareket>
+@{
+    ViewBag.Title = "Satış Detayı";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2>Satış Detayı</h2>
+    <table class="table table-condensed">
+        <tr>
+            <th>Satış Id</th>
+            <th>Ürün</th>
+            <th>Cari</th>
+            <th>Personel</th>
+            <th>Miktar</th>
+            <th>Birim</th>
+            <th>Fiyat</th>
+            <th>Toplam</th>
+            <th>Tarih</th>
+        </tr>
+        @foreach (var x in Model)
+        {
+            <tr>
+                <td>@x.SatisId</td>
+                <td>@x.Urun.UrunAd</td>
+                <td>@x.Cariler.CariAd @x.Cariler.CariSoyad</td>
+                <td>@x.Personel.PersonelAd @x.Personel.PersonelSoyad</td>
+                <td>@x.Miktar.ToString("N2")</td>
+                <td>@x.Birim</td>
+                <td>@x.Fiyat.ToString("N2") ₺</td>
+                <td>@x.ToplamTutar.ToString("N2") ₺</td>
+                <td>@x.Tarih.ToString("dd.MM.yyyy")</td>
+            </tr>
+        }
+    </table>
+    
+</div>

@@ -1,0 +1,36 @@
+﻿@model MvcOnlineTicariOtomasyon.Models.Siniflar.Faturalar
+@{
+    ViewBag.Title = "Yeni Fatura Ekle";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="container mt-5">
+    <h3 class="text-center mb-4">Yeni Fatura Ekle</h3>
+    @using (Html.BeginForm("FaturaEkle", "Fatura", FormMethod.Post, new { @class = "form-group" }))
+    {
+        @Html.LabelFor(x => x.FaturaSeriNo)
+        @Html.TextBoxFor(x => x.FaturaSeriNo, new { @class = "form-control", @required = "required" })
+        <br />
+        @Html.LabelFor(x => x.FaturaSıraNo)
+        @Html.TextBoxFor(x => x.FaturaSıraNo, new { @class = "form-control", @required = "required" })
+        <br />
+        @Html.LabelFor(x => x.Tarih)
+        @Html.TextBoxFor(x => x.Tarih, new { @class = "form-control", @type = "date", @required = "required" })
+        <br />
+        @Html.LabelFor(x => x.Saat)
+        @Html.TextBoxFor(x => x.Saat, new { @class = "form-control", @type = "time", @required = "required" })
+        <br />
+        @Html.LabelFor(x => x.VergiDairesi)
+        @Html.TextBoxFor(x => x.VergiDairesi, new { @class = "form-control" })
+        <br />
+        @Html.Label("Teslim Eden")
+        @Html.DropDownListFor(x => x.TeslimEden, (List<SelectListItem>)ViewBag.PersonelList, "Seçiniz", new { @class = "form-control" })
+        <br />
+        @Html.Label("Teslim Alan")
+        @Html.DropDownListFor(x => x.TeslimAlan, (List<SelectListItem>)ViewBag.CariList, "Seçiniz", new { @class = "form-control" })
+        <br />
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Kaydet</button>
+        </div>
+    }
+</div>

@@ -1,0 +1,39 @@
+﻿@model List<MvcOnlineTicariOtomasyon.Models.Siniflar.Tahsilat>
+@{
+    ViewBag.Title = "Tahsilat Listesi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mx-auto p-6">
+    <h2 class="text-2xl font-bold mb-4">Tahsilat Listesi</h2>
+    <br />
+        <a href="/Fatura/pdfListesi/" class="btn btn-outline-dark"><i class="fa fa-plus"></i> PDF/EXCEL</a>
+    
+    <br />
+    <br />
+    <table class="w-full table-auto border-collapse">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="border px-4 py-2">Fatura</th>
+                <th class="border px-4 py-2">Cari</th>
+                <th class="border px-4 py-2">Ödeme Türü</th>
+                <th class="border px-4 py-2">Tahsilat Miktarı</th>
+                <th class="border px-4 py-2">Tarih</th>
+                <th class="border px-4 py-2">Açıklama</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tahsilat in Model)
+            {
+                <tr>
+                    <td class="border px-4 py-2">@(tahsilat.Faturalar != null ? $"{tahsilat.Faturalar.FaturaSeriNo}-{tahsilat.Faturalar.FaturaSıraNo}" : "-")</td>
+                    <td class="border px-4 py-2">@(tahsilat.Cariler?.CariAd + " " + tahsilat.Cariler?.CariSoyad)</td>
+                    <td class="border px-4 py-2">@tahsilat.OdemeTuru</td>
+                    <td class="border px-4 py-2">@tahsilat.TahsilatMiktari.ToString("N2") ₺</td>
+                    <td class="border px-4 py-2">@tahsilat.TahsilatTarihi.ToString("dd/MM/yyyy")</td>
+                    <td class="border px-4 py-2">@tahsilat.Aciklama</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

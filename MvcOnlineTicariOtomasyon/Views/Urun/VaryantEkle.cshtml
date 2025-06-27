@@ -1,0 +1,149 @@
+﻿@model MvcOnlineTicariOtomasyon.Models.Siniflar.UrunVaryant
+@{
+    ViewBag.Title = "Varyant Ekle";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+    .variant-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 30px;
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    .variant-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f1f1f1;
+        margin-bottom: 25px;
+    }
+
+    .variant-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            font-size: 1rem;
+        }
+
+            .form-group input:focus,
+            .form-group select:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+            }
+
+    .ozellikler-container .input-group {
+        margin-bottom: 10px;
+    }
+
+    .btn-success, .btn-primary {
+        border-radius: 8px;
+        padding: 10px 20px;
+        transition: transform 0.2s;
+    }
+
+        .btn-success:hover, .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+    .btn-danger {
+        border-radius: 8px;
+        padding: 10px;
+    }
+</style>
+
+<div class="variant-container">
+    <div class="variant-header">
+        <h2 class="variant-title">Varyant Ekle</h2>
+        <a href="@Url.Action("Index", "UrunDetay", new { id = Model.UrunId })" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Geri Dön</a>
+    </div>
+
+    <p><strong>Ana Ürün:</strong> @ViewBag.UrunAd</p>
+
+    @using (Html.BeginForm("VaryantEkle", "Urun", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.HiddenFor(x => x.UrunId)
+
+        <div class="form-group">
+            <label for="VaryantAdi">Varyant Adı</label>
+            <input type="text" name="VaryantAdi" class="form-control" placeholder="Varyant Adı" required />
+        </div>
+
+        <div class="form-group">
+            <label for="Stok">Stok</label>
+            <input type="number" name="Stok" class="form-control" placeholder="Stok" value="0" min="0" required />
+        </div>
+
+        <div class="form-group">
+            <label for="FiyatFarki">Fiyat Farkı (₺)</label>
+            <input type="number" name="FiyatFarki" class="form-control" placeholder="Fiyat Farkı" step="0.01" value="0" />
+        </div>
+
+        <div class="form-group">
+            <label for="VaryantGorsel">Varyant Görsel (URL)</label>
+            <input type="text" name="VaryantGorsel" class="form-control" placeholder="Varyant Görsel URL (isteğe bağlı)" />
+        </div>
+
+        <!-- Varyant Özellikleri -->
+        <div class="form-group">
+            <label>Varyant Özellikleri</label>
+            <div class="ozellikler-container mt-2" id="ozellikler-container">
+                <div class="input-group">
+                    <select name="OzellikAdi" class="form-control">
+                        <option value="">Özellik Seçiniz</option>
+                        @foreach (var opt in new[] { "Beden", "Renk", "Materyal", "RAM", "Depolama", "Ekran Boyutu", "Malzeme", "Cilt Tipi", "Koku", "Hacim" })
+                        {
+                            <option value="@opt">@opt</option>
+                        }
+                    </select>
+                    <input type="text" name="OzellikDegeri" class="form-control" placeholder="Değer (örn: Kırmızı, 8GB)" />
+                </div>
+            </div>
+            <button type="button" class="btn btn-success mt-2" onclick="addOzellik()"><i class="fas fa-plus"></i> Özellik Ekle</button>
+        </div>
+
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Kaydet</button>
+    }
+</div>
+
+<script>
+    function addOzellik() {
+        const container = document.getElementById('ozellikler-container');
+        const ozellikId = 'ozellik-' + Date.now();
+        const html = `
+            <div class="input-group" id="${ozellikId}">
+                <select name="OzellikAdi" class="form-control">
+                    <option value="">Özellik Seçiniz</option>
+                    ${['Beden', 'Renk', 'Materyal', 'RAM', 'Depolama', 'Ekran Boyutu', 'Malzeme', 'Cilt Tipi', 'Koku', 'Hacim'].map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                </select>
+                <input type="text" name="OzellikDegeri" class="form-control" placeholder="Değer (örn: Kırmızı, 8GB)" />
+                <button type="button" class="btn btn-danger" onclick="document.getElementById('${ozellikId}').remove()"><i class="fas fa-trash"></i></button>
+            </div>`;
+        container.insertAdjacentHTML('beforeend', html);
+    }
+</script>

@@ -1,0 +1,242 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewBag.Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9fafb;
+            color: #2d3748;
+        }
+
+        /* Sayfanın tamamını kaplayan yapı */
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            flex: 1 0 auto; /* İçerik alanını genişlet */
+            padding-top: 70px; /* Header yüksekliği kadar boşluk */
+        }
+
+        /* Header Stilleri */
+        .navbar {
+            background-color: #1a202c;
+            padding: 0.75rem 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: fixed; /* Sabit header */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #fff !important;
+            transition: color 0.3s ease;
+        }
+
+            .navbar-brand:hover {
+                color: #63b3ed !important;
+            }
+
+        .nav-link {
+            color: #e2e8f0 !important;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s ease;
+        }
+
+            .nav-link:hover {
+                color: #63b3ed !important;
+            }
+
+        .dropdown-menu {
+            background-color: #1a202c;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-item {
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+            .dropdown-item:hover {
+                background-color: #2d3748;
+                color: #63b3ed;
+            }
+
+        .cart-icon, .account-icon {
+            position: relative;
+            color: #e2e8f0;
+            font-size: 1.2rem;
+            margin-left: 15px;
+            transition: color 0.3s ease;
+        }
+
+            .cart-icon:hover, .account-icon:hover {
+                color: #63b3ed;
+            }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background-color: #e53e3e;
+            color: #fff;
+            font-size: 0.7rem;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Footer Stilleri */
+        .footer {
+            flex-shrink: 0; /* Footer'ın küçülmesini engelle */
+            background-color: #1a202c;
+            color: #e2e8f0;
+            padding: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+
+            .footer a {
+                color: #63b3ed;
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+
+                .footer a:hover {
+                    color: #4299e1;
+                }
+
+        .social-icons a {
+            font-size: 1.1rem;
+            margin: 0 8px;
+            color: #e2e8f0;
+            transition: color 0.3s ease;
+        }
+
+            .social-icons a:hover {
+                color: #63b3ed;
+            }
+
+        /* Responsive Ayarları */
+        @@media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+
+            .nav-link {
+                font-size: 0.9rem;
+                padding: 0.5rem;
+            }
+
+            .cart-icon, .account-icon {
+                margin-left: 10px;
+            }
+
+            .footer {
+                text-align: center;
+                padding: 1rem 0;
+            }
+
+            .social-icons {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/Customer/Index">E-Ticaret</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Sol Tarafta Anasayfa ve Kategoriler -->
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Customer/Index">Ana Sayfa</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="kategoriMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Kategoriler
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="kategoriMenu">
+                            @foreach (var kategori in ViewBag.Kategoriler ?? new List<MvcOnlineTicariOtomasyon.Models.Siniflar.Kategori>())
+                            {
+                                <li><a class="dropdown-item" href="/Customer/KategoriUrunler/@kategori.KategoriId">@kategori.KategoriAd</a></li>
+                            }
+                        </ul>
+                    </li>
+                </ul>
+
+                <!-- Sağ Tarafta Account ve Sepet -->
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a href="/Login/Index" class="account-icon">
+                            <i class="bi bi-person-circle"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Customer/Sepet" class="cart-icon">
+                            <i class="bi bi-cart3"></i>
+                            <span class="cart-count">
+                                @*@{
+                                    var sepet = Session["sepet"] as List<MvcOnlineTicariOtomasyon.Models.Siniflar.SepetItem> ?? new List<MvcOnlineTicariOtomasyon.Models.Siniflar.SepetItem>();
+                                    var sepetCount = sepet.Count;
+                                }
+                                @sepetCount*@
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- İçerik -->
+    <div class="main-content">
+        <div class="container">
+            @RenderBody()
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container d-flex justify-content-between align-items-center flex-wrap">
+            <p class="mb-0">© 2025 E-Ticaret. Tüm hakları saklıdır.</p>
+            <div class="social-icons">
+                <a href="#" target="_blank"><i class="bi bi-twitter"></i></a>
+                <a href="#" target="_blank"><i class="bi bi-instagram"></i></a>
+                <a href="#" target="_blank"><i class="bi bi-facebook"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+</body>
+</html>

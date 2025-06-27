@@ -1,0 +1,50 @@
+﻿@model IEnumerable<MvcOnlineTicariOtomasyon.Models.Siniflar.SinifGrup3>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Ürün Marka Dağılımı</h6>
+    </div>
+    <div class="card-body">
+        <table id="markaTablo" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Marka</th>
+                    <th>Ürün Sayısı</th>
+                    <th>Toplam Stok</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ int sirano = 0;}
+                @foreach (var x in Model)
+                {
+                    <tr>
+                        <td>@{sirano++;} @sirano</td>
+                        <td>@x.marka</td>
+                        <td>@x.sayi</td>
+                        <td>@x.toplamStok</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('#markaTablo').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "language": { "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/tr.json" },
+                dom: 'Bfrtip',
+                buttons: ['copy', 'excel', 'pdf']
+            });
+        });
+    </script>
+}

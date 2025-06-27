@@ -1,0 +1,199 @@
+﻿@{
+    Layout = null;
+    var userType = Session["UserType"]?.ToString();
+    var displayName = "";
+    var c = new MvcOnlineTicariOtomasyon.Models.Siniflar.Context();
+
+    if (userType == "Admin")
+    {
+        displayName = Session["KullaniciAd"]?.ToString() ?? "Bilinmeyen Admin";
+    }
+    else if (userType == "Personel")
+    {
+        var personelId = (int?)Session["PersonelId"];
+        if (personelId.HasValue)
+        {
+            var personel = c.Personels.Find(personelId.Value);
+            displayName = personel != null ? $"{personel.PersonelAd} {personel.PersonelSoyad}" : "Bilinmeyen Personel";
+        }
+        else
+        {
+            displayName = "Bilinmeyen Personel";
+        }
+    }
+    else
+    {
+        displayName = "Bilinmeyen Kullanıcı";
+    }
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Online Ticari Otomasyon</title>
+    <link href="~/web/dist/css/styles.css" rel="stylesheet" />
+    @RenderSection("styles", required: false) <!-- Styles bölümü -->
+    <!-- Roboto fontu ekleniyor -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Header Güncellemesi -->
+    <nav class="sb-topnav navbar navbar-expand navbar-dark" style="background: linear-gradient(90deg, #6B46C1 0%, #2D3748 100%); height: 70px; padding: 0 1.5rem;">
+        <a class="navbar-brand" href="#" style="color: #FFFFFF; font-family: 'Roboto', sans-serif; font-size: 1.5rem; font-weight: 500;">
+
+            <strong>@(displayName ?? "Kullanıcı")</strong>
+        </a>
+        <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#" style="color: #FFFFFF;">
+            <i class="fas fa-bars"></i>
+        </button>
+        <!-- Modern Arama Çubuğu -->
+        <form class="d-none d-md-inline-block form-inline ml-auto mr-0 my-2 my-md-0" style="position: relative;">
+            <div class="input-group" style="max-width: 300px;">
+
+                <div class="input-group-append">
+
+                </div>
+            </div>
+        </form>
+        <!-- Kullanıcı Menüsü -->
+        <ul class="navbar-nav ml-auto ml-md-0">
+            <li class="nav-item dropdown">
+
+                <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #FFFFFF; font-family: 'Roboto', sans-serif;">
+                    <i class="fas fa-user fa-fw"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown" style="background-color: #2D3748; border: none; border-radius: 8px;">
+                    <div class="dropdown-divider" style="border-color: #4A5568;"></div>
+                    <a class="btn btn-sm btn-outline-secondary" href="@Url.Action("Logout", "Login")">
+                        <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+    <div id="layoutSidenav">
+        <!-- Sidebar Güncellemesi -->
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion" style="background-color: #4A5568; font-family: 'Roboto', sans-serif;">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+
+                        <div class="sb-sidenav-menu-heading" style="color: #A0AEC0; padding: 1.5rem 1rem 0.75rem; font-size: 0.9rem; text-transform: uppercase;">
+                            İşlemler
+                        </div>
+                        <a class="nav-link" href="/Kategori/Index/" style="color: #FFFFFF; transition: all 0.3s ease;">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt" style="color: #A0AEC0;"></i></div>
+                            Kategoriler
+                        </a>
+                        <a class="nav-link" href="/Urun/Index/" style="color: #FFFFFF; transition: all 0.3s ease;">
+                            <div class="sb-nav-link-icon"><i class="fas fa-flask" style="color: #A0AEC0;"></i></div>
+                            Ürünler
+                        </a>
+
+                        @if (User.IsInRole("A"))
+                        {
+                            <a class="nav-link" href="/Departman/Index/" style="color: #FFFFFF; transition: all 0.3s ease;">
+                                <div class="sb-nav-link-icon"><i class="fas fa-bars" style="color: #A0AEC0;"></i></div>
+                                Departmanlar
+                            </a>
+                        }
+
+
+                        <a class="nav-link" href="/Cari/Index/" style="color: #FFFFFF; transition: all 0.3s ease;">
+                            <div class="sb-nav-link-icon"><i class="fas fa-user" style="color: #A0AEC0;"></i></div>
+                            Cariler
+                        </a>
+                        <a class="nav-link" href="/Personel/Index/" style="color: #FFFFFF; transition: all 0.3s ease;">
+                            <div class="sb-nav-link-icon"><i class="fas fa-street-view" style="color: #A0AEC0;"></i></div>
+                            Personeller
+                        </a>
+
+
+                        <div class="sb-sidenav-menu-heading" style="color: #A0AEC0; padding: 1.5rem 1rem 0.75rem; font-size: 0.9rem; text-transform: uppercase;">
+                            Rapor & Fatura
+                        </div>
+                        <a class="nav-link" href="/Satis/Index/" style="color: #FFFFFF; transition: all 0.3s ease;">
+                            <div class="sb-nav-link-icon"><i class="fas fa-taxi" style="color: #A0AEC0;"></i></div>
+                            Satış Rapor
+                        </a>
+                        <a class="nav-link" href="/Fatura/Index/" style="color: #FFFFFF; transition: all 0.3s ease;">
+                            <div class="sb-nav-link-icon"><i class="fas fa-calendar" style="color: #A0AEC0;"></i></div>
+                            Fatura Rapor
+                        </a>
+                        <a class="nav-link" href="/Fatura/Dinamik/" style="color: #FFFFFF; transition: all 0.3s ease;">
+                            <div class="sb-nav-link-icon"><i class="fas fa-procedures" style="color: #A0AEC0;"></i></div>
+                            Satış/Fatura İşlemleri
+                        </a>
+
+
+
+                        <a class="nav-link" href="/istatistik/Index/" style="color: #FFFFFF; transition: all 0.3s ease;">
+                            <div class="sb-nav-link-icon"><i class="fas fa-database" style="color: #A0AEC0;"></i></div>
+                            İstatistikler
+                        </a>
+
+                        @if (Session["UserType"]?.ToString() == "Personel")
+                        {
+                            <a class="nav-link" href="/Personel/KendiProfilGuncelle/" style="color: #FFFFFF; transition: all 0.3s ease;">
+                                <div class="sb-nav-link-icon"><i class="fas fa-accusoft" style="color: #A0AEC0;"></i></div>
+                                Profilimi Güncelle
+                            </a>
+                        }
+
+                        @if (User.IsInRole("A"))
+                        {
+                            <a class="nav-link" href="/istatistik/KolayTablolar/" style="color: #FFFFFF; transition: all 0.3s ease;">
+                                <div class="sb-nav-link-icon"><i class="fas fa-car" style="color: #A0AEC0;"></i></div>
+                                Hızlı Bakış
+                            </a>
+                        }
+                    </div>
+                    @if (User.IsInRole("A"))
+                    {
+                        <a class="nav-link" href="/Admin/Index/" style="color: #FFFFFF; transition: all 0.3s ease;">
+                            <div class="sb-nav-link-icon"><i style="color: #A0AEC0;"></i></div>
+                            Yönetici Listesi
+                        </a>
+                    }
+                </div>
+                <div class="sb-sidenav-footer">
+                    <div class="small">Giriş Yapan:</div>
+                    <strong>@(userType ?? "Kullanıcı")</strong>
+                </div>
+            </nav>
+        </div>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+            </main>
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Copyright © </div>
+                        <div>
+                            <a href="#">Gizlilik Politikası</a>
+                            ·
+                            <a href="#">Şartlar ve koşullar</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="~/web/dist/js/scripts.js"></script>
+    @RenderSection("scripts", required: false) <!-- Scripts bölümü -->
+</body>
+</html>

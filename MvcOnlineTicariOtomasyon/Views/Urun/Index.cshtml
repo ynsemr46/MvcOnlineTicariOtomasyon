@@ -1,0 +1,106 @@
+﻿@using MvcOnlineTicariOtomasyon.Models.Siniflar
+@model List<Urun>
+
+@{
+    ViewBag.Title = "Ürün Yönetimi";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <!-- Arama Formu -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            @using (Html.BeginForm("Index", "Urun", FormMethod.Get, new { @class = "form-inline" }))
+            {
+                <div class="input-group">
+                    @Html.TextBox("p", null, new { @class = "form-control", @placeholder = "Ürün Adı Ara..." })
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa fa-search"></i> Ara
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col-md-6 text-right">
+            <a href="/Urun/YenıUrun/" class="btn btn-info"><i class="fa fa-plus"></i> Yeni Ürün Ekle</a>
+            <a href="/Urun/UrunListesi/" class="btn btn-outline-dark"><i class="fa fa-plus"></i> PDF/EXCEL</a>
+        </div>
+    </div>
+
+    <!-- Ürün Tablosu -->
+    <div class="card">
+        <div class="card-body">
+            <table id="urunTable" class="table table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Ürün</th>
+                        <th>Marka</th>
+                        <th>Stok</th>
+                        <th>Alış Fiyatı</th>
+                        <th>Satış Fiyatı</th>
+                        <th>Kategori</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var u in Model)
+                    {
+                        <tr>
+                            <td>@u.UrunAd</td>
+                            <td>@u.Marka</td>
+                            <td>
+                                <span class="@(u.Stok < 10 ? "text-danger" : "text-success")">
+                                    @u.Stok
+                                </span>
+                            </td>
+                            <td>@u.AlisFiyat.ToString("N2") ₺</td>
+                            <td>@u.SatisFiyat.ToString("N2") ₺</td>
+                            <td>@u.Kategori.KategoriAd</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                   
+                                    <a href="/Urun/UrunGetir/@u.UrunId"
+                                       class="btn btn-warning btn-sm">
+                                        <i class="fa fa-edit"></i> Güncelle
+                                    </a>
+                                    <a href="/Urun/UrunSil/@u.UrunId"
+                                       class="btn btn-danger btn-sm"
+                                       onclick="return confirm('Bu ürünü silmek istediğinize emin misiniz?');">
+                                        <i class="fa fa-trash"></i> Sil
+                                    </a>
+                                    <a href="/UrunDetay/Index/@u.UrunId" class="btn btn-info btn-sm">
+                                        <i class="fa fa-info-circle"></i> Ürün Detayı
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- DataTables ve FontAwesome için CDN -->
+@section scripts {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#urunTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Turkish.json" // Türkçe dil desteği
+                },
+                "pageLength": 10, // Varsayılan olarak 10 satır göster
+                "order": [[0, "asc"]] // Ürün adına göre sırala
+            });
+        });
+    </script>
+}
+
+@section styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+}

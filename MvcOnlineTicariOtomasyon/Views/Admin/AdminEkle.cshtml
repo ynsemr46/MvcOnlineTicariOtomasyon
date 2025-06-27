@@ -1,0 +1,420 @@
+﻿@model MvcOnlineTicariOtomasyon.Models.Siniflar.Admin
+@{
+    ViewBag.Title = "Yeni Yönetici Ekle";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+
+
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        margin-top: 100px;   
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        padding: 30px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 30px;
+        position: relative;
+    }
+
+        .form-header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+    .form-title {
+        font-size: 2.2rem;
+        color: #2c3e50;
+        font-weight: 700;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+    }
+
+        .form-title i {
+            color: #667eea;
+            font-size: 2rem;
+        }
+
+    .form-subtitle {
+        color: #7f8c8d;
+        font-size: 1.1rem;
+        font-weight: 400;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 0.95rem;
+        transition: color 0.3s ease;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+        color: #2c3e50;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-control:hover {
+            border-color: #bdc3c7;
+            background: #fff;
+        }
+
+    .input-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+        .input-group .form-control {
+            flex: 1;
+        }
+
+    .btn {
+        padding: 15px 30px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+    .btn-warning {
+        background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);
+        color: white;
+    }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(243, 156, 18, 0.3);
+        }
+
+    .btn-info {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
+    }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.3);
+        }
+
+    .btn-success {
+        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        color: white;
+    }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(46, 204, 113, 0.3);
+        }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
+        }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .text-danger {
+        color: #e74c3c;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .text-muted {
+        color: #7f8c8d;
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+
+    .alert {
+        padding: 15px 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        border: none;
+        font-weight: 500;
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        color: white;
+    }
+
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    select.form-control {
+        cursor: pointer;
+    }
+
+    input[type="file"] {
+        padding: 12px;
+    }
+
+    .form-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 12px;
+        margin: 20px 0;
+        border-left: 4px solid #667eea;
+    }
+
+    .form-section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #7f8c8d;
+        font-size: 1.1rem;
+    }
+
+        .password-toggle:hover {
+            color: #667eea;
+        }
+
+    .form-navigation {
+        display: flex;
+        justify-content: center;
+        margin: 40px 0;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .nav-btn {
+        padding: 10px 20px;
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid #667eea;
+        border-radius: 25px;
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+    .form-page {
+        display: none;
+    }
+
+        .form-page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+    keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .image-preview {
+        max-width: 100px;
+        max-height: 100px;
+        border-radius: 8px;
+        margin-top: 10px;
+        border: 2px solid #e9ecef;
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            transform: scale(1.2);
+        }
+
+    media (max-width: 768px) {
+        .container
+
+    {
+        margin: 10px;
+        padding: 20px;
+    }
+
+    .form-title {
+        font-size: 1.8rem;
+    }
+
+    .form-navigation {
+        gap: 10px;
+    }
+
+    .nav-btn {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+    }
+</style>
+
+<!-- Admin Ekle Formu -->
+<div id="admin-ekle" class="form-page active">
+    <div class="container">
+        <div class="form-header">
+            <h2 class="form-title">
+                <i class="fas fa-user-shield"></i>
+                Yeni Yönetici Ekle
+            </h2>
+            <p class="form-subtitle">Sisteme yeni bir yönetici hesabı ekleyin</p>
+        </div>
+
+        <form action="AdminEkle" method="post">
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-user"></i> Kullanıcı Adı
+                </label>
+                <input type="text" name="KullaniciAd" class="form-control" placeholder="Kullanıcı adını girin"
+                       required maxlength="10" pattern="[a-zA-Z0-9]+"
+                       title="Kullanıcı adı sadece harf ve rakam içerebilir.">
+                <span class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-lock"></i> Şifre
+                </label>
+                <div style="position: relative;">
+                    <input type="password" name="Sifre" class="form-control" placeholder="Şifrenizi girin"
+                           required maxlength="30" minlength="6" id="password1">
+                    <i  onclick="togglePassword('password1', this)"></i>
+                </div>
+                <span class="text-danger"></span>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Kaydet
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            $("#KullaniciAd").on("input", function () {
+                var value = $(this).val();
+                if (/[^a-zA-Z0-9]/.test(value)) {
+                    $(this).next(".field-validation-error").text("Kullanıcı adı sadece harf ve rakam içerebilir.");
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,404 @@
+﻿@model MvcOnlineTicariOtomasyon.Models.Siniflar.Urun
+@{
+    ViewBag.Title = "Yeni Ürün Ekle";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<style>
+
+
+
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        margin-top: 100px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        padding: 30px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 30px;
+        position: relative;
+    }
+
+        .form-header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+    .form-title {
+        font-size: 2.2rem;
+        color: #2c3e50;
+        font-weight: 700;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+    }
+
+        .form-title i {
+            color: #667eea;
+            font-size: 2rem;
+        }
+
+    .form-subtitle {
+        color: #7f8c8d;
+        font-size: 1.1rem;
+        font-weight: 400;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 0.95rem;
+        transition: color 0.3s ease;
+    }
+
+
+
+    .input-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+        .input-group .form-control {
+            flex: 1;
+        }
+
+    .btn {
+        padding: 15px 30px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+    .btn-warning {
+        background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);
+        color: white;
+    }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(243, 156, 18, 0.3);
+        }
+
+    .btn-info {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
+    }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.3);
+        }
+
+    .btn-success {
+        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        color: white;
+    }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(46, 204, 113, 0.3);
+        }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
+        }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .text-danger {
+        color: #e74c3c;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .text-muted {
+        color: #7f8c8d;
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+
+    .alert {
+        padding: 15px 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        border: none;
+        font-weight: 500;
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        color: white;
+    }
+
+
+
+    input[type="file"] {
+        padding: 12px;
+    }
+
+    .form-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 12px;
+        margin: 20px 0;
+        border-left: 4px solid #667eea;
+    }
+
+    .form-section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #7f8c8d;
+        font-size: 1.1rem;
+    }
+
+        .password-toggle:hover {
+            color: #667eea;
+        }
+</style>
+
+<div id="personel-guncelle" class="form-page hidden">
+    <div class="container">
+        <div class="form-header">
+            <h2 class="form-title">
+                <i class="product-info"></i> Ürün Ekle
+            </h2>
+            <p class="form-subtitle">Ürün Ekleme Alanı</p>
+        </div>
+        
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">@ViewBag.Error</div>
+            }
+            @using (Html.BeginForm("YenıUrun", "Urun", FormMethod.Post, new { enctype = "multipart/form-data", id = "urunForm" }))
+            {
+                <div class="form-group">
+                    @Html.LabelFor(x => x.UrunAd, "Ürün Adı")
+                    @Html.TextBoxFor(x => x.UrunAd, new { @class = "form-control", required = "required", pattern = "[a-zA-Z0-9çÇğĞıİöÖşŞüÜ ]+", title = "Sadece harf, rakam ve boşluk kullanılabilir." })
+                    @Html.ValidationMessageFor(x => x.UrunAd, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Marka, "Marka")
+                    @Html.TextBoxFor(x => x.Marka, new { @class = "form-control", required = "required", pattern = "[a-zA-Z0-9çÇğĞıİöÖşŞüÜ ]+", title = "Sadece harf, rakam ve boşluk kullanılabilir." })
+                    @Html.ValidationMessageFor(x => x.Marka, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Stok, "Stok")
+                    @Html.TextBoxFor(x => x.Stok, new { @class = "form-control", type = "number", min = "0", value = "0", required = "required" })
+                    @Html.ValidationMessageFor(x => x.Stok, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Birim, "Birim")
+                    @Html.TextBoxFor(x => x.Birim, new { @class = "form-control", required = "required", pattern = "[a-zA-ZçÇğĞıİöÖşŞüÜ ]+", title = "Sadece harf ve boşluk kullanılabilir.", placeholder = "Ör: Adet, Kilogram, Litre" })
+                    @Html.ValidationMessageFor(x => x.Birim, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.AlisFiyat, "Alış Fiyatı")
+                    @Html.TextBoxFor(x => x.AlisFiyat, new { @class = "form-control", type = "number", step = "0.01", min = "0", required = "required" })
+                    @Html.ValidationMessageFor(x => x.AlisFiyat, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.SatisFiyat, "Satış Fiyatı")
+                    @Html.TextBoxFor(x => x.SatisFiyat, new { @class = "form-control", type = "number", step = "0.01", min = "0", required = "required" })
+                    @Html.ValidationMessageFor(x => x.SatisFiyat, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Kategoriid, "Kategori")
+                    @Html.DropDownListFor(x => x.Kategoriid, (List<SelectListItem>)ViewBag.dgr1, "Kategori Seçiniz", new { @class = "form-control", required = "required" })
+                    @Html.ValidationMessageFor(x => x.Kategoriid, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    <label>Ana Görsel</label>
+                    <input type="file" name="UrunGorsel" class="form-control" accept="image/*" onchange="validateFile(this)" />
+                    @Html.ValidationMessageFor(x => x.UrunGorsel, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Aciklama, "Açıklama")
+                    @Html.TextAreaFor(x => x.Aciklama, new { @class = "form-control", rows = "5", maxlength = "1000" })
+                    @Html.ValidationMessageFor(x => x.Aciklama, "", new { @class = "text-danger" })
+                </div>
+
+                <!-- Ana Ürün Özellikleri -->
+                <div class="form-group">
+                    <label>Ana Ürün Özellikleri</label>
+                    <div id="ozellikler-container" class="mt-2">
+                        <div class="input-group mb-2">
+                            <select name="OzellikAdi[]" class="form-control ozellik-adi">
+                                <option value="">Özellik Seçiniz</option>
+                                @foreach (var opt in new[] { "Beden", "Renk", "Materyal", "RAM", "Depolama", "Ekran Boyutu", "Malzeme", "Cilt Tipi", "Koku", "Hacim" })
+                                {
+                                    <option value="@opt">@opt</option>
+                                }
+                            </select>
+                            <input type="text" name="OzellikDegeri[]" class="form-control ozellik-degeri" placeholder="Değer (örn: Kırmızı, 8GB)" />
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-success mt-2" onclick="addOzellik()">+ Özellik Ekle</button>
+                </div>
+
+                <!-- Görseller -->
+                <div class="form-group">
+                    <label>Ek Görseller</label>
+                    <div id="gorseller-container" class="mt-2">
+                        <div class="input-group mb-2">
+                            <input type="file" name="GorselUrl[]" class="form-control" accept="image/*" onchange="validateFile(this)" />
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-success mt-2" onclick="addGorsel()">+ Görsel Ekle</button>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+            }
+        
+    </div>
+</div>
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
+            <script>
+                function addOzellik() {
+                    const container = document.getElementById('ozellikler-container');
+                    const ozellikId = 'ozellik-' + Date.now();
+                    const html = `
+                                    <div class="input-group mb-2" id="${ozellikId}">
+                                        <select name="OzellikAdi[]" class="form-control ozellik-adi">
+                                            <option value="">Özellik Seçiniz</option>
+                                            ${['Beden', 'Renk', 'Materyal', 'RAM', 'Depolama', 'Ekran Boyutu', 'Malzeme', 'Cilt Tipi', 'Koku', 'Hacim'].map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                                        </select>
+                                        <input type="text" name="OzellikDegeri[]" class="form-control ozellik-degeri" placeholder="Değer (örn: Kırmızı, 8GB)" />
+                                        <button type="button" class="btn btn-danger" onclick="document.getElementById('${ozellikId}').remove()">-</button>
+                                    </div>`;
+                    container.insertAdjacentHTML('beforeend', html);
+                }
+
+                function addGorsel() {
+                    const container = document.getElementById('gorseller-container');
+                    const gorselId = 'gorsel-' + Date.now();
+                    const html = `
+                                    <div class="input-group mb-2" id="${gorselId}">
+                                        <input type="file" name="GorselUrl[]" class="form-control" accept="image/*" onchange="validateFile(this)" />
+                                        <button type="button" class="btn btn-danger" onclick="document.getElementById('${gorselId}').remove()">-</button>
+                                    </div>`;
+                    container.insertAdjacentHTML('beforeend', html);
+                }
+
+                function validateFile(input) {
+                    const maxSize = 2 * 1024 * 1024; // 2MB
+                    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                    if (input.files[0]) {
+                        if (!allowedTypes.includes(input.files[0].type)) {
+                            alert("Sadece JPEG, PNG veya GIF dosyaları yüklenebilir!");
+                            input.value = "";
+                        } else if (input.files[0].size > maxSize) {
+                            alert("Dosya boyutu 2MB'dan büyük olamaz!");
+                            input.value = "";
+                        }
+                    }
+                }
+
+                $(document).ready(function () {
+                    $("#urunForm").on("submit", function (e) {
+                        let isValid = true;
+                        $(".ozellik-adi").each(function () {
+                            if ($(this).val() && !$(this).closest('.input-group').find('.ozellik-degeri').val()) {
+                                alert("Lütfen seçilen özellik için bir değer girin.");
+                                isValid = false;
+                            }
+                        });
+                        $(".ozellik-degeri").each(function () {
+                            if ($(this).val() && !$(this).closest('.input-group').find('.ozellik-adi').val()) {
+                                alert("Lütfen değer için bir özellik seçin.");
+                                isValid = false;
+                            }
+                        });
+                        if (!isValid) {
+                            e.preventDefault();
+                        }
+                    });
+                });
+            </script>
+        }

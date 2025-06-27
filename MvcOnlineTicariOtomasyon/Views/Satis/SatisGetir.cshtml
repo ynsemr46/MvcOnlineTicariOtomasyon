@@ -1,0 +1,84 @@
+﻿@model MvcOnlineTicariOtomasyon.Models.Siniflar.SatisHareket
+@{
+    ViewBag.Title = "Satış Güncelleme";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2>Satış Güncelleme</h2>
+    @using (Html.BeginForm("SatisGuncelle", "Satis", FormMethod.Post))
+    {
+        @Html.HiddenFor(x => x.SatisId)
+        <div class="form-group">
+            @Html.Label("Ürün")
+            @Html.DropDownListFor(x => x.UrunId, (List<SelectListItem>)ViewBag.dgr1, new { @class = "form-control", @id = "urunSelect" })
+        </div>
+        <div class="form-group">
+            @Html.Label("Birim")
+            @Html.TextBoxFor(x => x.Birim, new { @class = "form-control", @id = "birim", @readonly = "readonly" })
+        </div>
+        <div class="form-group">
+            @Html.Label("Cari")
+            @Html.DropDownListFor(x => x.CariId, (List<SelectListItem>)ViewBag.dgr2, new { @class = "form-control" })
+        </div>
+        <div class="form-group">
+            @Html.Label("Personel")
+            @Html.DropDownListFor(x => x.PersonelId, (List<SelectListItem>)ViewBag.dgr3, new { @class = "form-control" })
+        </div>
+        <div class="form-group">
+            @Html.Label("Miktar")
+            @Html.TextBoxFor(x => x.Miktar, new { @class = "form-control", @type = "number", @step = "0.01", @min = "0" })
+        </div>
+        <div class="form-group">
+            @Html.Label("Fiyat")
+            @Html.TextBoxFor(x => x.Fiyat, new { @class = "form-control", @id = "fiyat" })
+        </div>
+        <div class="form-group">
+            @Html.Label("Toplam Tutar")
+            @Html.TextBoxFor(x => x.ToplamTutar, new { @class = "form-control", @id = "toplamTutar", @readonly = "readonly" })
+        </div>
+        <div class="form-group">
+            @Html.Label("Tarih")
+            @Html.TextBoxFor(x => x.Tarih, new { @class = "form-control", @type = "date" })
+        </div>
+        <button class="btn btn-warning">Güncelle</button>
+    }
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Ürün seçildiğinde birim ve fiyat getir
+            $("#urunSelect").change(function () {
+                let urunId = $(this).val();
+                if (urunId) {
+                    $.ajax({
+                        url: "/Fatura/GetProductPrice",
+                        data: { id: urunId },
+                        success: function (data) {
+                            $("#fiyat").val(data.price.toFixed(2));
+                            calculateTotal();
+                        }
+                    });
+                    $.ajax({
+                        url: "/Satis/GetProductUnit",
+                        data: { id: urunId },
+                        success: function (data) {
+                            $("#birim").val(data.unit);
+                        }
+                    });
+                }
+            });
+
+            // Miktar veya fiyat değiştiğinde toplamı hesapla
+            $("#Miktar, #fiyat").on("input", calculateTotal);
+
+            function calculateTotal() {
+                let miktar = parseFloat($("#Miktar").val()) || 0;
+                let fiyat = parseFloat($("#fiyat").val()) || 0;
+                let toplam = miktar * fiyat;
+                $("#toplamTutar").val(toplam.toFixed(2));
+            }
+        });
+    </script>
+}

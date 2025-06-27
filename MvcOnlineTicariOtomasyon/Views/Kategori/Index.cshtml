@@ -1,0 +1,144 @@
+﻿@using MvcOnlineTicariOtomasyon.Models.Siniflar
+@model List<Kategori>
+
+@{
+    ViewBag.Title = "Kategori Yönetimi";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+@section styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <style>
+        .card {
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            border: none;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .table thead {
+            background: linear-gradient(90deg, #007bff 0%, #00c6ff 100%);
+            color: #fff;
+        }
+
+        .btn-group .btn {
+            margin-right: 4px;
+        }
+
+        .btn-info {
+            background: linear-gradient(90deg, #36d1c4 0%, #5b86e5 100%);
+            border: none;
+        }
+
+            .btn-info:hover {
+                background: linear-gradient(90deg, #5b86e5 0%, #36d1c4 100%);
+            }
+
+        .btn-warning {
+            background: #ffb347;
+            border: none;
+            color: #fff;
+        }
+
+            .btn-warning:hover {
+                background: #ff9800;
+            }
+
+        .btn-danger {
+            background: #ff5e62;
+            border: none;
+            color: #fff;
+        }
+
+            .btn-danger:hover {
+                background: #ff1e56;
+            }
+
+        .input-group .form-control {
+            border-radius: 20px 0 0 20px;
+        }
+
+        .input-group-append .btn {
+            border-radius: 0 20px 20px 0;
+        }
+    </style>
+}
+
+<div class="container mt-4">
+    <!-- Arama Formu -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            @using (Html.BeginForm("Index", "Kategori", FormMethod.Get, new { @class = "form-inline" }))
+            {
+                <div class="input-group">
+                    @Html.TextBox("p", null, new { @class = "form-control", @placeholder = "Kategori Adı Ara..." })
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa fa-search"></i> Ara
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col-md-6 text-right">
+            <a href="/Kategori/KategoriEkle" class="btn btn-info"><i class="fa fa-plus"></i> Yeni Kategori Ekle</a>
+        </div>
+    </div>
+
+    <!-- Kategori Tablosu -->
+    <div class="card">
+        <div class="card-body">
+            <table id="kategoriTable" class="table table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Kategori Adı</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var k in Model)
+                    {
+                        <tr>
+                            <td class="text-center">@k.KategoriId</td>
+                            <td>@k.KategoriAd</td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <a href="/Kategori/KategoriGetir/@k.KategoriId" class="btn btn-sm btn-warning">
+                                        <i class="fa fa-edit"></i> Güncelle
+                                    </a>
+                                    <a href="/Kategori/KategoriSil/@k.KategoriId" class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Bu kategoriyi silmek istediğinize emin misiniz?');">
+                                        <i class="fa fa-trash"></i> Sil
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#kategoriTable').DataTable({
+                "language": { "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Turkish.json" },
+                "pageLength": 10,
+                "order": [[1, "asc"]] // Kategori adına göre sırala
+            });
+        });
+    </script>
+}
+
+@*@section styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+}*@

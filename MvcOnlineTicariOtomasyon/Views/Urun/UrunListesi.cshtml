@@ -1,0 +1,123 @@
+﻿@using MvcOnlineTicariOtomasyon.Models.Siniflar
+@model List<Urun>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ürün Listesi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <style>
+        media print {
+            body { margin: 0; }
+            .no-print { display: none; }
+            table { width: 100%; font-size: 12px; }
+            th, td { padding: 8px; }
+        }
+        .dataTables_wrapper .dataTables_filter input {
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            background: #e5e7eb;
+            border-radius: 0.375rem;
+            margin: 0 0.25rem;
+            padding: 0.5rem 1rem;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: #2563eb;
+            color: white;
+        }
+        .dt-buttons .dt-button {
+            background: #2563eb;
+            color: white;
+            border-radius: 0.375rem;
+            padding: 0.5rem 1rem;
+            margin-right: 0.5rem;
+        }
+        .dt-buttons .dt-button:hover {
+            background: #1e40af;
+        }
+        table.dataTable {
+            table-layout: auto;
+            width: 100% !important;
+        }
+        th, td {
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    
+    <div class="container mx-auto p-6">
+
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Ürün Listesi</h1>
+        <button class="no-print fixed top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600">
+            <a href="/Urun/Index">Geri Dön </a>
+        </button>
+        <div class="bg-white shadow-md rounded-lg">
+
+            <table id="urunTable" class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ürün Id</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Adı</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Marka</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stok</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alış Fiyat</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Satış Fiyat</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach (var x in Model)
+                    {
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 text-sm text-gray-900">@x.UrunId</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">@x.UrunAd</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">@x.Marka</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">@x.Stok</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">@x.AlisFiyat.ToString("N2") ₺</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">@x.SatisFiyat.ToString("N2") ₺</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">@x.Kategori.KategoriAd</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            var table = $('#urunTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/tr.json'
+                },
+                lengthChange: false,
+                scrollX: false,
+                autoWidth: true,
+                buttons: ['copy', 'excel', 'csv', 'pdf', 'colvis'],
+                responsive: true,
+                dom: 'Bfrtip'
+            });
+            table.buttons().container().appendTo('#urunTable_wrapper .dataTables_filter');
+        });
+        
+    </script>
+</body>
+</html>

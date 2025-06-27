@@ -1,0 +1,41 @@
+﻿@model List<MvcOnlineTicariOtomasyon.Models.Siniflar.FaturaKalem>
+@{
+    ViewBag.Title = "Fatura Detayları";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2>Fatura Kalemleri</h2>
+    <div class="card">
+        <div class="card-body">
+            <table id="kalemTable" class="table table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Ürün</th>
+                        <th>Açıklama</th>
+                        <th>Miktar</th>
+                        <th>Birim</th>
+                        <th>Birim Fiyat</th>
+                        <th>Tutar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var x in Model)
+                    {
+                        <tr>
+                            <td>@x.FaturaKalemId</td>
+                            <td>@(x.Urun?.UrunAd ?? "Belirtilmemiş")</td>
+                            <td>@x.Aciklama</td>
+                            <td>@x.Miktar.ToString("N2")</td>
+                            <td>@x.Birim</td>
+                            <td>@x.BirimFiyat.ToString("N2") ₺</td>
+                            <td>@x.Tutar.ToString("N2") ₺</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+         
+        </div>
+    </div>
+</div>

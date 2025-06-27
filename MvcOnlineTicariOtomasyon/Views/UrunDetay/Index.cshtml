@@ -1,0 +1,198 @@
+﻿@model MvcOnlineTicariOtomasyon.Models.Siniflar.Class1
+@{
+    ViewBag.Title = "Ürün Detay";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<!-- Bootstrap 4 CDN -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+    .product-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 30px;
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    .product-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f1f1f1;
+        margin-bottom: 25px;
+    }
+
+    .product-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+    }
+
+    .thumbnail-container {
+        display: flex;
+        flex-direction: column;
+        max-height: 600px;
+        overflow-y: auto;
+        padding-right: 10px;
+        width: 100px;
+    }
+
+        .thumbnail-container img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            transition: border-color 0.3s, transform 0.3s;
+            margin-bottom: 10px; /* Bootstrap 4'te gap yerine margin-bottom kullanıyoruz */
+        }
+
+            .thumbnail-container img.active, .thumbnail-container img:hover {
+                border-color: #007bff;
+                transform: scale(1.05);
+            }
+
+    .main-image {
+        width: 100%;
+        max-height: 600px;
+        object-fit: contain;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .info-card {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #e9ecef;
+    }
+
+        .info-card h5 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 15px;
+        }
+
+        .info-card p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .info-card .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #007bff;
+        }
+
+    .btn-group .btn {
+        margin-right: 10px;
+        transition: transform 0.2s;
+        border-radius: 8px;
+        padding: 10px 20px;
+    }
+
+        .btn-group .btn:hover {
+            transform: translateY(-2px);
+        }
+
+    .image-section {
+        display: flex;
+        align-items: flex-start;
+    }
+
+        .image-section > * {
+            margin-right: 20px; /* Bootstrap 4'te gap yerine margin-right kullanıyoruz */
+        }
+
+            .image-section > *:last-child {
+                margin-right: 0;
+            }
+</style>
+
+<div class="product-container">
+    @{
+        var urun = Model.Deger1.FirstOrDefault();
+    }
+    @if (urun != null)
+    {
+        <div class="product-header">
+            <h1 class="product-title">@urun.UrunAd</h1>
+            <div class="btn-group">
+                <a href="@Url.Action("UrunGetir", "Urun", new { id = urun.UrunId })" class="btn btn-warning"><i class="fas fa-edit"></i> Düzenle</a>
+                <a href="@Url.Action("UrunSil", "Urun", new { id = urun.UrunId })" class="btn btn-danger" onclick="return confirm('Bu ürünü silmek istediğinizden emin misiniz?')"><i class="fas fa-trash"></i> Sil</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sol Kısım: Görseller -->
+            <div class="col-lg-6">
+                <div class="image-section">
+                    <!-- Thumbnail'lar (Yan Tarafta) -->
+                    <div class="thumbnail-container">
+                        <img src="@urun.UrunGorsel" alt="@urun.UrunAd" class="thumbnail active" onclick="changeImage(this)">
+                        @foreach (var gorsel in Model.Deger5)
+                        {
+                            <img src="@gorsel.GorselUrl" alt="Ek Görsel" class="thumbnail" onclick="changeImage(this)">
+                        }
+                    </div>
+                    <!-- Ana Görsel -->
+                    <div class="flex-grow-1">
+                        <img src="@urun.UrunGorsel" alt="@urun.UrunAd" class="main-image" id="mainImage">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sağ Kısım: Bilgiler -->
+            <div class="col-lg-6">
+                <div class="info-card">
+                    <h5>Ürün Bilgileri</h5>
+                    <p><strong>Marka:</strong> @urun.Marka</p>
+                    <p><strong>Kategori:</strong> @urun.Kategori.KategoriAd</p>
+                    <p><strong>Alış Fiyatı:</strong> ₺@urun.AlisFiyat.ToString("N2")</p>
+                    <p><strong>Satış Fiyatı:</strong> <span class="price">₺@urun.SatisFiyat.ToString("N2")</span></p>
+                    <p><strong>Stok:</strong> @urun.Stok</p>
+                    <p><strong>Açıklama:</strong> @urun.Aciklama</p>
+                    @if (ViewBag.Ozellikler != null && ((List<MvcOnlineTicariOtomasyon.Models.Siniflar.UrunOzellik>)ViewBag.Ozellikler).Any())
+                    {
+                        <p><strong>Özellikler:</strong></p>
+                        <ul class="list-unstyled">
+                            @foreach (var ozellik in (List<MvcOnlineTicariOtomasyon.Models.Siniflar.UrunOzellik>)ViewBag.Ozellikler)
+                            {
+                                <li><strong>@ozellik.OzellikAdi:</strong> @ozellik.OzellikDegeri</li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning" role="alert">Ürün bulunamadı.</div>
+    }
+</div>
+
+<!-- Bootstrap 4 JS ve Bağımlılıklar -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    function changeImage(thumbnail) {
+        // Tüm thumbnail'lardan aktif sınıfını kaldır
+        document.querySelectorAll('.thumbnail').forEach(img => img.classList.remove('active'));
+        // Tıklanan thumbnail'a aktif sınıfını ekle
+        thumbnail.classList.add('active');
+        // Ana görseli güncelle
+        document.getElementById('mainImage').src = thumbnail.src;
+    }
+</script>

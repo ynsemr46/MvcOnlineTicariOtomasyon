@@ -1,0 +1,693 @@
+﻿@model MvcOnlineTicariOtomasyon.Models.Siniflar.Class4
+@{
+    ViewBag.Title = "Dinamik";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    // Veritabanı bağlantısını oluşturuyoruz
+    var context = new MvcOnlineTicariOtomasyon.Models.Siniflar.Context();
+
+    // Cariler listesini durum=true olanlardan çekip dropdown için hazırlıyoruz
+    List<SelectListItem> cariler = (from x in context.Carilers.Where(c => c.Durum)
+                                    select new SelectListItem
+                                    {
+                                        Text = x.CariAd + " " + x.CariSoyad,
+                                        Value = x.CariId.ToString()
+                                    }).ToList();
+
+    // Personeller listesini dropdown için hazırlıyoruz
+    List<SelectListItem> personeller = (from x in context.Personels.ToList()
+                                        select new SelectListItem
+                                        {
+                                            Text = x.PersonelAd + " " + x.PersonelSoyad,
+                                            Value = x.PersonelId.ToString()
+                                        }).ToList();
+
+    // Ürünler listesini durum=true olanlardan çekip dropdown için hazırlıyoruz
+    List<SelectListItem> urunler = (from x in context.Uruns.Where(u => u.Durum)
+                                    select new SelectListItem
+                                    {
+                                        Text = x.UrunAd,
+                                        Value = x.UrunId.ToString()
+                                    }).ToList();
+
+    // Sayfalama ayarları: Her sayfada 5 fatura gösterilecek
+    int pageSize = 5;
+    int pageNumber = Convert.ToInt32(Request.QueryString["page"] ?? "1");
+    // Faturaları tarihe göre tersten sırala (en yeni en üstte), aynı tarihte olanlar için FaturaId'ye göre sırala
+    var sortedFaturas = Model.deger1.OrderByDescending(f => f.Tarih).ThenByDescending(f => f.FaturaId).ToList();
+    int totalItems = sortedFaturas.Count();
+    int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+    var pagedFaturas = sortedFaturas.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Tailwind CSS ve Bootstrap için CDN bağlantıları -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Faturalar arasında boşluk ve ayırıcı çizgi için stil */
+        .fatura-separator {
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 2px solid #e5e7eb;
+        }
+        /* Tablo hücreleri için padding ve hizalama */
+        .table th, .table td {
+            padding: 0.75rem;
+            vertical-align: middle;
+        }
+        /* Modal pencere için stil */
+        .modal-content {
+            border-radius: 0.5rem;
+        }
+        /* Modal genişlik ayarı */
+        .modal-lg {
+            max-width: 900px;
+        }
+        /* Hata durumunda kırmızı çerçeve */
+        .error {
+            border-color: #ef4444 !important;
+        }
+        /* Buton grubu için stil */
+        .btn-group .btn {
+            margin-right: 0.5rem;
+        }
+
+            .btn-group .btn:last-child {
+                margin-right: 0;
+            }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6">
+        <!-- Fatura Listesi Bölümü -->
+        <div class="bg-white shadow-md rounded-lg mb-6">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h2 class="text-xl font-bold text-gray-800">Fatura & Satış İşlemleri</h2>
+                <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" onclick="addNewOrder()">Yeni Satış & Fatura</button>
+            </div>
+            <div class="p-4">
+                @foreach (var item in pagedFaturas)
+                {
+                    <div class="mb-6">
+                        <table class="w-full table-auto border border-gray-300 rounded-lg overflow-hidden">
+                            <thead>
+                                <tr class="bg-gray-200">
+                                    <th colspan="5" class="border-b p-2 text-left">
+                                        <span class="font-semibold">Seri-Sıra No: @item.FaturaSeriNo-@item.FaturaSıraNo</span>
+                                        <span class="ml-4">Teslim Eden: @item.TeslimEden</span>
+                                        <span class="ml-4">Teslim Alan: @item.TeslimAlan</span>
+                                        <span class="ml-4">Tarih: @item.Tarih.ToString("dd/MM/yyyy")</span>
+                                        <span class="ml-4">Vergi Dairesi: @item.VergiDairesi</span>
+                                        <div class="btn-group float-right">
+                                            <button class="btn btn-warning btn-sm" onclick="updateOrder(@item.FaturaId)">
+                                                <i class="fas fa-edit"></i> Güncelle
+                                            </button>
+                                            @if (!item.OdendiMi)
+                                            {
+                                                <button class="btn btn-success btn-sm" onclick="openTahsilatModal(@item.FaturaId)">
+                                                    <i class="fas fa-money-bill-wave"></i> Tahsilat
+                                                </button>
+                                            }
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="5">
+                                        <!-- Fatura Kalemleri Tablosu -->
+                                        <table class="w-full table-auto border-collapse mt-2">
+                                            <thead>
+                                                <tr class="bg-gray-100">
+                                                    <th class="border px-4 py-2">Ürün</th>
+                                                    <th class="border px-4 py-2">Birim</th>
+                                                    <th class="border px-4 py-2">Miktar</th>
+                                                    <th class="border px-4 py-2">Fiyat</th>
+                                                    <th class="border px-4 py-2">Tutar</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @{
+                                                    decimal totalBill = 0;
+                                                    var relatedKalems = Model.deger2.Where(k => k.Faturaid == item.FaturaId).ToList();
+                                                }
+                                                @foreach (var order in relatedKalems)
+                                                {
+                                                    <tr>
+                                                        <td class="border px-4 py-2">@order.Aciklama</td>
+                                                        <td class="border px-4 py-2">@order.Birim</td>
+                                                        <td class="border px-4 py-2">@order.Miktar</td>
+                                                        <td class="border px-4 py-2">@order.BirimFiyat.ToString("N2") ₺</td>
+                                                        <td class="border px-4 py-2">@order.Tutar.ToString("N2") ₺</td>
+                                                    </tr>
+                                                    totalBill += order.Tutar;
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <!-- Tahsilat Bilgileri Tablosu -->
+                                        <table class="w-full table-auto border-collapse mt-2">
+                                            <thead>
+                                                <tr class="bg-gray-100">
+                                                    <th class="border px-4 py-2">Ödeme Türü</th>
+                                                    <th class="border px-4 py-2">Tahsilat Miktarı</th>
+                                                    <th class="border px-4 py-2">Tarih</th>
+                                                    <th class="border px-4 py-2">Açıklama</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @{
+                                                    var relatedTahsilats = Model.deger3.Where(t => t.FaturaId == item.FaturaId).ToList();
+                                                }
+                                                @foreach (var tahsilat in relatedTahsilats)
+                                                {
+                                                    <tr>
+                                                        <td class="border px-4 py-2">@tahsilat.OdemeTuru</td>
+                                                        <td class="border px-4 py-2">@tahsilat.TahsilatMiktari.ToString("N2") ₺</td>
+                                                        <td class="border px-4 py-2">@tahsilat.TahsilatTarihi.ToString("dd/MM/yyyy")</td>
+                                                        <td class="border px-4 py-2">@tahsilat.Aciklama</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <!-- Ödeme Bilgileri -->
+                                        <div class="flex justify-end space-x-4 p-2 bg-gray-50 border-t">
+                                            <span><strong>Fatura Toplam:</strong> @totalBill.ToString("N2") ₺</span>
+                                            <span><strong>Ödenen Miktar:</strong> @item.OdenenMiktar.ToString("N2") ₺</span>
+                                            <span><strong>Kalan Borç:</strong> @(item.Toplam - item.OdenenMiktar)</span>
+                                            <span><strong>Tahsilat Durumu:</strong> @(!item.OdendiMi ? "Ödenmedi" : "Ödendi")</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <hr class="fatura-separator" />
+                    </div>
+                }
+                <!-- Sayfalama Bölümü -->
+                <div class="flex justify-center mt-4">
+                    <nav aria-label="Sayfa navigasyonu">
+                        <ul class="pagination">
+                            <li class="page-item @(pageNumber > 1 ? "" : "disabled")">
+                                <a class="page-link" href="?page=@(pageNumber - 1)">Önceki</a>
+                            </li>
+                            @for (int i = 1; i <= totalPages; i++)
+                            {
+                                <li class="page-item @(i == pageNumber ? "active" : "")">
+                                    <a class="page-link" href="?page=@i">@i</a>
+                                </li>
+                            }
+                            <li class="page-item @(pageNumber < totalPages ? "" : "disabled")">
+                                <a class="page-link" href="?page=@(pageNumber + 1)">Sonraki</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Yeni Satış & Fatura Modal -->
+        <div class="modal fade" id="newOrderModal" tabindex="-1" aria-labelledby="newOrderModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-blue-600 text-white">
+                        <h4 class="modal-title" id="modalTitle">Yeni Satış & Fatura Girişi</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="NewOrderForm">
+                        <div class="modal-body">
+                            <input type="hidden" id="FaturaId" name="FaturaId" />
+                            <h5 class="text-red-500 mb-2">Fatura ve Satış Detayları</h5>
+                            <hr class="mb-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Seri No</label>
+                                    <input type="text" id="FaturaSeriNo" name="FaturaSeriNo" placeholder="Seri Numarası" class="form-control mt-1 block w-full rounded-md shadow-sm" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Sıra No</label>
+                                    <input type="text" id="FaturaSıraNo" name="FaturaSıraNo" placeholder="Sıra Numarası" class="form-control mt-1 block w-full rounded-md shadow-sm" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Tarih</label>
+                                    <input type="date" id="Tarih" name="Tarih" class="form-control mt-1 block w-full rounded-md shadow-sm" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Vergi Dairesi</label>
+                                    <input type="text" id="VergiDairesi" name="VergiDairesi" placeholder="Vergi Dairesi" class="form-control mt-1 block w-full rounded-md shadow-sm" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Saat</label>
+                                    <input type="time" id="Saat" name="Saat" class="form-control mt-1 block w-full rounded-md shadow-sm" value="@DateTime.Now.ToString("HH:mm")" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Cari (Teslim Alan)</label>
+                                    <select id="CariId" name="CariId" class="form-control mt-1 block w-full rounded-md shadow-sm">
+                                        <option value="">Seçiniz</option>
+                                        @foreach (var cari in cariler)
+                                        {
+                                            <option value="@cari.Value">@cari.Text</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Personel (Teslim Eden)</label>
+                                    <select id="PersonelId" name="PersonelId" class="form-control mt-1 block w-full rounded-md shadow-sm">
+                                        <option value="">Seçiniz</option>
+                                        @foreach (var personel in personeller)
+                                        {
+                                            <option value="@personel.Value">@personel.Text</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Toplam Tutar</label>
+                                    <input type="number" id="Toplam" name="Toplam" placeholder="Toplam Tutar" readonly class="form-control mt-1 block w-full rounded-md shadow-sm bg-gray-100" />
+                                </div>
+                            </div>
+
+                            <h5 class="text-red-500 mt-6 mb-2">Ürün ve Kalem Detayları</h5>
+                            <hr class="mb-4">
+                            <div class="grid grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Ürün</label>
+                                    <select id="UrunId" name="UrunId" class="form-control mt-1 block w-full rounded-md shadow-sm">
+                                        <option value="">Seçiniz</option>
+                                        @foreach (var urun in urunler)
+                                        {
+                                            <option value="@urun.Value">@urun.Text</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Birim</label>
+                                    <input type="text" id="Birim" name="Birim" readonly class="form-control mt-1 block w-full rounded-md shadow-sm bg-gray-100" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Miktar</label>
+                                    <input type="number" id="Miktar" name="Miktar" placeholder="Miktar Giriniz" class="form-control mt-1 block w-full rounded-md shadow-sm" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Birim Fiyat (₺)</label>
+                                    <input type="number" id="BirimFiyat" name="BirimFiyat" placeholder="Birim Başına Fiyat" step="0.01" class="form-control mt-1 block w-full rounded-md shadow-sm" />
+                                </div>
+                                <div class="col-span-2 flex items-end">
+                                    <button id="addToList" type="button" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Ürünü Ekle</button>
+                                </div>
+                            </div>
+
+                            <table id="detailsTable" class="w-full table-auto border-collapse mt-4">
+                                <thead>
+                                    <tr class="bg-gray-200">
+                                        <th class="border px-4 py-2">Ürün</th>
+                                        <th class="border px-4 py-2">Birim</th>
+                                        <th class="border px-4 py-2">Miktar</th>
+                                        <th class="border px-4 py-2">Birim Fiyat (₺)</th>
+                                        <th class="border px-4 py-2">Toplam (₺)</th>
+                                        <th class="border px-4 py-2">İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer border-t p-4">
+                            <button type="button" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400" data-bs-dismiss="modal">Kapat</button>
+                            <button id="saveOrder" type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Kaydet</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tahsilat Modal -->
+        <div class="modal fade" id="tahsilatModal" tabindex="-1" aria-labelledby="tahsilatModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-green-600 text-white">
+                        <h4 class="modal-title" id="tahsilatModalLabel">Tahsilat Ekle</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="tahsilatForm">
+                        <div class="modal-body">
+                            <input type="hidden" id="TahsilatFaturaId" name="FaturaId" />
+                            <input type="hidden" id="TahsilatCariId" name="CariId" />
+                            <h5 class="text-red-500 mb-2">Tahsilat Detayları</h5>
+                            <hr class="mb-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Fatura Numarası</label>
+                                    <input type="text" id="TahsilatFaturaNo" readonly class="form-control mt-1 block w-full rounded-md shadow-sm bg-gray-100" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Cari (Teslim Alan)</label>
+                                    <input type="text" id="TahsilatCariAd" readonly class="form-control mt-1 block w-full rounded-md shadow-sm bg-gray-100" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Toplam Borç</label>
+                                    <input type="number" id="TahsilatToplamBorc" readonly class="form-control mt-1 block w-full rounded-md shadow-sm bg-gray-100" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Kalan Borç</label>
+                                    <input type="number" id="TahsilatKalanBorc" readonly class="form-control mt-1 block w-full rounded-md shadow-sm bg-gray-100" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Ödeme Türü</label>
+                                    <select id="TahsilatOdemeTuru" name="OdemeTuru" class="form-control mt-1 block w-full rounded-md shadow-sm">
+                                        <option value="">Seçiniz</option>
+                                        <option value="Nakit">Nakit</option>
+                                        <option value="Kredi Kartı">Kredi Kartı</option>
+                                        <option value="Havale/EFT">Havale/EFT</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Tahsilat Miktarı</label>
+                                    <input type="number" id="TahsilatMiktari" name="TahsilatMiktari" step="0.01" class="form-control mt-1 block w-full rounded-md shadow-sm" />
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700">Açıklama</label>
+                                    <textarea id="TahsilatAciklama" name="Aciklama" class="form-control mt-1 block w-full rounded-md shadow-sm"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-t p-4">
+                            <button type="button" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400" data-bs-dismiss="modal">Kapat</button>
+                            <button id="saveTahsilat" type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Kaydet</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section scripts{
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js" crossorigin="anonymous"></script>
+        <script>
+            let isUpdateMode = false;
+
+            // Yeni Satış Modalını Aç
+            function addNewOrder() {
+                isUpdateMode = false;
+                $("#modalTitle").text("Yeni Satış & Fatura Girişi");
+                $("#FaturaId").val("");
+                $("#FaturaSeriNo, #FaturaSıraNo, #Tarih, #VergiDairesi, #Saat, #CariId, #PersonelId, #Toplam").val("");
+                $("#CariId, #PersonelId").removeClass('error');
+                $("#detailsTable tbody").empty();
+                $("#newOrderModal").modal('show');
+            }
+
+            // Fatura Güncelleme Modalını Aç
+            function updateOrder(faturaId) {
+                isUpdateMode = true;
+                $("#modalTitle").text("Fatura Güncelle");
+                $.ajax({
+                    url: '/Fatura/GetFaturaForUpdate',
+                    type: 'GET',
+                    data: { id: faturaId },
+                    success: function (data) {
+                        if (data.error) {
+                            alert("Hata: " + data.error);
+                            return;
+                        }
+                        $("#FaturaId").val(data.fatura.FaturaId);
+                        $("#FaturaSeriNo").val(data.fatura.FaturaSeriNo);
+                        $("#FaturaSıraNo").val(data.fatura.FaturaSıraNo);
+                        $("#Tarih").val(data.fatura.Tarih.split('T')[0]);
+                        $("#VergiDairesi").val(data.fatura.VergiDairesi);
+                        $("#Saat").val(data.fatura.Saat);
+                        $("#CariId").val(data.fatura.CariId).removeClass('error');
+                        $("#PersonelId").val(data.fatura.PersonelId).removeClass('error');
+                        $("#Toplam").val(data.fatura.Toplam.toFixed(2));
+                        $("#detailsTable tbody").empty();
+                        data.kalemler.forEach(kalem => {
+                            let row = `<tr>
+                                    <td>${kalem.Aciklama}</td>
+                                    <td>${kalem.Birim}</td>
+                                    <td>${kalem.Miktar}</td>
+                                    <td>${kalem.BirimFiyat.toFixed(2)}</td>
+                                    <td>${kalem.Tutar.toFixed(2)}</td>
+                                    <td><a href="#" class="deleteItem text-red-600 hover:underline" data-urunid="${kalem.UrunId}">Sil</a></td>
+                                </tr>`;
+                            $("#detailsTable tbody").append(row);
+                        });
+                        updateTotal();
+                        $("#newOrderModal").modal('show');
+                    },
+                    error: function (xhr) {
+                        alert("Fatura verileri alınamadı: " + (xhr.responseJSON?.error || "Bilinmeyen bir hata."));
+                    }
+                });
+            }
+
+            // Toplam Tutarı Hesapla
+            function updateTotal() {
+                let total = 0;
+                $("#detailsTable tbody tr").each(function () {
+                    total += parseFloat($(this).find('td:eq(4)').text()) || 0;
+                });
+                $("#Toplam").val(total.toFixed(2));
+            }
+
+            // Ürün Seçildiğinde Birim ve Fiyatı Getir
+            $("#UrunId").change(function () {
+                let urunId = $(this).val();
+                if (urunId) {
+                    $.ajax({
+                        url: '/Fatura/GetProductPrice',
+                        type: 'GET',
+                        data: { id: urunId },
+                        success: function (data) {
+                            if (data.error) {
+                                alert("Hata: " + data.error);
+                                $("#BirimFiyat").val('');
+                                $("#Birim").val('');
+                                return;
+                            }
+                            $("#BirimFiyat").val(data.price.toFixed(2));
+                            $.ajax({
+                                url: '/Fatura/GetProductUnit',
+                                type: 'GET',
+                                data: { id: urunId },
+                                success: function (unitData) {
+                                    if (unitData.error) {
+                                        alert("Hata: " + unitData.error);
+                                        $("#Birim").val('');
+                                    } else {
+                                        $("#Birim").val(unitData.unit);
+                                    }
+                                },
+                                error: function () {
+                                    alert("Birim bilgisi alınamadı.");
+                                    $("#Birim").val('');
+                                }
+                            });
+                        },
+                        error: function () {
+                            alert("Ürün fiyatı alınamadı.");
+                            $("#BirimFiyat").val('');
+                            $("#Birim").val('');
+                        }
+                    });
+                } else {
+                    $("#BirimFiyat").val('');
+                    $("#Birim").val('');
+                }
+            });
+
+            // Ürünü Listeye Ekle
+            $("#addToList").click(function (e) {
+                e.preventDefault();
+                let urunId = $("#UrunId").val();
+                let urunAd = $("#UrunId option:selected").text();
+                let birim = $("#Birim").val().trim();
+                let miktar = parseFloat($("#Miktar").val()) || 0;
+                let birimFiyat = parseFloat($("#BirimFiyat").val()) || 0;
+
+                if (!urunId || !birim || miktar <= 0 || birimFiyat <= 0) {
+                    $("#UrunId").toggleClass('error', !urunId);
+                    $("#Birim").toggleClass('error', !birim);
+                    $("#Miktar").toggleClass('error', miktar <= 0);
+                    $("#BirimFiyat").toggleClass('error', birimFiyat <= 0);
+                    alert("Lütfen tüm alanları doğru şekilde doldurun!");
+                    return;
+                }
+
+                let tutar = (birimFiyat * miktar).toFixed(2);
+                let row = `<tr>
+                        <td>${urunAd}</td>
+                        <td>${birim}</td>
+                        <td>${miktar}</td>
+                        <td>${birimFiyat.toFixed(2)}</td>
+                        <td>${tutar}</td>
+                        <td><a href="#" class="deleteItem text-red-600 hover:underline" data-urunid="${urunId}">Sil</a></td>
+                    </tr>`;
+                $("#detailsTable tbody").append(row);
+                updateTotal();
+                clearItem();
+            });
+
+            // Formu Temizle
+            function clearItem() {
+                $("#UrunId, #Birim, #Miktar, #BirimFiyat").val('').removeClass('error');
+            }
+
+            // Ürünü Listeden Sil
+            $(document).on('click', '.deleteItem', function (e) {
+                e.preventDefault();
+                $(this).closest('tr').fadeOut(400, function () {
+                    $(this).remove();
+                    updateTotal();
+                });
+            });
+
+            // Faturayı Kaydet
+            $("#saveOrder").click(function (e) {
+                e.preventDefault();
+                let cariId = $("#CariId").val();
+                let personelId = $("#PersonelId").val();
+                let tarih = $("#Tarih").val();
+                let saat = $("#Saat").val();
+
+                if (!cariId || !personelId || !tarih || !saat) {
+                    $("#CariId").toggleClass('error', !cariId);
+                    $("#PersonelId").toggleClass('error', !personelId);
+                    $("#Tarih").toggleClass('error', !tarih);
+                    $("#Saat").toggleClass('error', !saat);
+                    alert("Lütfen Cari, Personel, Tarih ve Saat alanlarını doldurun!");
+                    return;
+                }
+
+                let orderArr = [];
+                $("#detailsTable tbody tr").each(function () {
+                    orderArr.push({
+                        UrunId: $(this).find('.deleteItem').data('urunid'),
+                        Aciklama: $(this).find('td:eq(0)').text(),
+                        Birim: $(this).find('td:eq(1)').text(),
+                        Miktar: parseFloat($(this).find('td:eq(2)').text()),
+                        BirimFiyat: parseFloat($(this).find('td:eq(3)').text()),
+                        Tutar: parseFloat($(this).find('td:eq(4)').text())
+                    });
+                });
+
+                if (orderArr.length === 0) {
+                    alert("Lütfen en az bir ürün ekleyin!");
+                    return;
+                }
+
+                let data = JSON.stringify({
+                    FaturaId: $("#FaturaId").val(),
+                    FaturaSeriNo: $("#FaturaSeriNo").val(),
+                    FaturaSıraNo: $("#FaturaSıraNo").val(),
+                    Tarih: tarih,
+                    Saat: saat,
+                    VergiDairesi: $("#VergiDairesi").val(),
+                    CariId: cariId,
+                    PersonelId: personelId,
+                    Toplam: $("#Toplam").val(),
+                    kalemler: orderArr,
+                    isUpdate: isUpdateMode
+                });
+
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    type: 'POST',
+                    url: "/Fatura/FaturaKaydet",
+                    data: data,
+                    success: function (result) {
+                        alert(result);
+                        location.reload();
+                    },
+                    error: function (xhr) {
+                        alert("Hata oluştu: " + (xhr.responseJSON?.error || "Bilinmeyen bir hata."));
+                    }
+                });
+            });
+
+            // Tahsilat Modalını Aç
+            function openTahsilatModal(faturaId) {
+                $.ajax({
+                    url: '/Fatura/GetFaturaTahsilatBilgileri',
+                    type: 'GET',
+                    data: { faturaId: faturaId },
+                    success: function (data) {
+                        if (data.error) {
+                            alert("Hata: " + data.error);
+                            return;
+                        }
+                        $("#TahsilatFaturaId").val(data.faturaId);
+                        $("#TahsilatCariId").val(data.cariId);
+                        $("#TahsilatFaturaNo").val(`${data.faturaSeriNo}-${data.faturaSiraNo}`);
+                        $("#TahsilatCariAd").val(data.cariAd);
+                        $("#TahsilatToplamBorc").val(data.toplam.toFixed(2));
+                        $("#TahsilatKalanBorc").val(data.kalanBorc.toFixed(2));
+                        $("#TahsilatOdemeTuru").val('');
+                        $("#TahsilatMiktari").val('');
+                        $("#TahsilatAciklama").val('');
+                        $("#TahsilatOdemeTuru, #TahsilatMiktari").removeClass('error');
+                        $("#tahsilatModal").modal('show');
+                    },
+                    error: function (xhr) {
+                        alert("Fatura bilgileri alınamadı: " + (xhr.responseJSON?.error || "Bilinmeyen bir hata."));
+                    }
+                });
+            }
+
+            // Tahsilat Kaydet
+            $("#tahsilatForm").submit(function (e) {
+                e.preventDefault();
+                let odemeTuru = $("#TahsilatOdemeTuru").val();
+                let tahsilatMiktari = parseFloat($("#TahsilatMiktari").val()) || 0;
+                let kalanBorc = parseFloat($("#TahsilatKalanBorc").val()) || 0;
+
+                if (!odemeTuru || tahsilatMiktari <= 0 || tahsilatMiktari > kalanBorc) {
+                    $("#TahsilatOdemeTuru").toggleClass('error', !odemeTuru);
+                    $("#TahsilatMiktari").toggleClass('error', tahsilatMiktari <= 0 || tahsilatMiktari > kalanBorc);
+                    alert("Lütfen ödeme türünü seçin ve geçerli bir tahsilat miktarı girin (kalan borçtan fazla olamaz)!");
+                    return;
+                }
+
+                let data = {
+                    faturaId: $("#TahsilatFaturaId").val(),
+                    cariId: $("#TahsilatCariId").val(),
+                    odemeTuru: odemeTuru,
+                    tahsilatMiktari: tahsilatMiktari,
+                    aciklama: $("#TahsilatAciklama").val()
+                };
+
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    type: 'POST',
+                    url: '/Fatura/TahsilatKaydet',
+                    data: JSON.stringify(data),
+                    success: function (result) {
+                        if (result.success) {
+                            alert(result.success);
+                            $("#tahsilatModal").modal('hide');
+                            location.reload();
+                        } else {
+                            alert("Hata: " + result.error);
+                        }
+                    },
+                    error: function (xhr) {
+                        alert("Hata oluştu: " + (xhr.responseJSON?.error || "Bilinmeyen bir hata."));
+                    }
+                });
+            });
+
+            // Input hata sınıfını temizle
+            $("#TahsilatOdemeTuru, #TahsilatMiktari, #UrunId, #Birim, #Miktar, #BirimFiyat, #CariId, #PersonelId, #Tarih, #Saat").on('input change', function () {
+                $(this).removeClass('error');
+            });
+        </script>
+    }
+</body>
+</html>

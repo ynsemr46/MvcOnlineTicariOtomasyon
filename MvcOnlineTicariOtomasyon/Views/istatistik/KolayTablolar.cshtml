@@ -1,0 +1,214 @@
+﻿@model MvcOnlineTicariOtomasyon.Models.Siniflar.HizliBakisViewModel
+@{
+    ViewBag.Title = "Hızlı Bakış";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="container-fluid mt-4">
+    <h1 class="mb-4">Hızlı Bakış Tabloları</h1>
+
+    <!-- Kategori Tablosu -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Kategori Dağılımı</h6>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Kategori Adı</th>
+                        <th>Ürün Sayısı</th>
+                        <th>Oran</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int sirano = 0;
+                        int toplamUrun = Model.KategoriDagilim.Any() ? Model.KategoriDagilim.Sum(x => x.Sayi) : 0;
+                    }
+                    @foreach (var x in Model.KategoriDagilim)
+                    {
+                        <tr>
+                            <td>@{ sirano++; } @sirano</td>
+                            <td>@x.Kategori</td>
+                            <td>@x.Sayi</td>
+                            <td>
+                                <div class="progress">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: @(toplamUrun > 0 ? (x.Sayi * 100 / toplamUrun) : 0)%"
+                                         aria-valuenow="@(toplamUrun > 0 ? (x.Sayi * 100 / toplamUrun) : 0)" aria-valuemin="0" aria-valuemax="100">
+                                        @(toplamUrun > 0 ? (x.Sayi * 100 / toplamUrun) : 0)%
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Şehir Dağılımı Tablosu -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Müşteri Şehir Dağılımı</h6>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Şehir</th>
+                        <th>Adet</th>
+                        <th>Oran</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        sirano = 0;
+                        int toplamCari = Model.SehirDagilim.Any() ? Model.SehirDagilim.Sum(x => x.Sayi) : 0;
+                    }
+                    @foreach (var x in Model.SehirDagilim)
+                    {
+                        <tr>
+                            <td>@{ sirano++; } @sirano</td>
+                            <td>@x.Sehir</td>
+                            <td>@x.Sayi</td>
+                            <td>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: @(toplamCari > 0 ? (x.Sayi * 100 / toplamCari) : 0)"
+                                         aria-valuenow="@(toplamCari > 0 ? (x.Sayi * 100 / toplamCari) : 0)" aria-valuemin="0" aria-valuemax="100">
+                                        @(toplamCari > 0 ? (x.Sayi * 100 / toplamCari) : 0)
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- En Borçlu Cariler Tablosu -->
+    @*<div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">En Çok Borçlu 5 Cari</h6>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Cari Adı</th>
+                        <th>Borç (₺)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ sirano = 0; }
+                    @foreach (var x in Model.EnBorcluCariler)
+                    {
+                        <tr>
+                            <td>@{ sirano++; } @sirano</td>
+                            <td>@x.CariAd @(string.IsNullOrEmpty(x.CariSoyad) ? "" : x.CariSoyad)</td>
+                            <td>@x.ToplamBorc</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>*@
+
+    <!-- Son Giderler Tablosu -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Son 5 Gider</h6>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Açıklama</th>
+                        <th>Tutar (₺)</th>
+                        <th>Tarih</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ sirano = 0; }
+                    @foreach (var x in Model.SonGiderler)
+                    {
+                        <tr>
+                            <td>@{ sirano++; } @sirano</td>
+                            <td>@x.GiderAciklama</td>
+                            <td>@x.Tutar</td>
+                            <td>@x.Tarih.ToString("dd.MM.yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Son Tahsilatlar Tablosu -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Son 5 Tahsilat</h6>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Cari</th>
+                        <th>Tutar (₺)</th>
+                        <th>Ödeme Türü</th>
+                        <th>Tarih</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ sirano = 0; }
+                    @foreach (var x in Model.SonTahsilatlar)
+                    {
+                        <tr>
+                            <td>@{ sirano++; } @sirano</td>
+                            <td>@x.CariAd</td>
+                            <td>@x.TahsilatMiktari</td>
+                            <td>@x.OdemeTuru</td>
+                            <td>@x.TahsilatTarihi.ToString("dd.MM.yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Kısmi Görünümler -->
+    @Html.Action("Partial1", "istatistik")
+    @Html.Action("Partial4", "istatistik")
+   
+  
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
+    <script>
+        $(document).ready(function () {
+            $('table').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/tr.json"
+                }
+            });
+        });
+    </script>
+}

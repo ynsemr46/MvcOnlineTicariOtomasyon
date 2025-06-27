@@ -1,0 +1,48 @@
+﻿@model MvcOnlineTicariOtomasyon.Models.Siniflar.FaturaKalem
+    @{
+        ViewBag.Title = "Yeni Fatura Kalemi";
+        Layout = "~/Views/Shared/AdminLayout.cshtml";
+    }
+
+<div class="container mt-5">
+    <h3 class="text-center mb-4">Yeni Fatura Kalemi Ekle</h3>
+    @using (Html.BeginForm("YeniKalem", "Fatura", FormMethod.Post, new { @class = "form-group" }))
+    {
+        @Html.HiddenFor(x => x.Faturaid)
+
+        <br />
+        @Html.LabelFor(x => x.Aciklama)
+        @Html.TextBoxFor(x => x.Aciklama, new { @class = "form-control" })
+        <br />
+        @Html.LabelFor(x => x.Miktar)
+        @Html.TextBoxFor(x => x.Miktar, new { @class = "form-control", @type = "number", @min = "0", @onchange = "calculateTotal()", @id = "txtMiktar" })
+        <br />
+        @Html.LabelFor(x => x.BirimFiyat)
+        @Html.TextBoxFor(x => x.BirimFiyat, new { @class = "form-control", @id = "txtBirimFiyat", @onchange = "calculateTotal()" })
+        <br />
+        @Html.LabelFor(x => x.Tutar)
+        @Html.TextBoxFor(x => x.Tutar, new { @class = "form-control", @id = "txtTutar", @readonly = "readonly" })
+        <br />
+        @Html.LabelFor(x => x.Faturaid)
+        @Html.TextBoxFor(x => x.Faturaid, new { @class = "form-control" })
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Kaydet</button>
+        </div>
+    }
+</div>
+
+    @section scripts {
+        <script>
+        function calculateTotal() {
+            var miktar = parseFloat(document.getElementById('txtMiktar').value) || 0;
+            var birimFiyat = parseFloat(document.getElementById('txtBirimFiyat').value) || 0;
+            var tutar = miktar * birimFiyat;
+            if (!isNaN(tutar)) {
+                document.getElementById('txtTutar').value = tutar.toFixed(2);
+            }
+        }
+
+      
+        </script>
+ }
+

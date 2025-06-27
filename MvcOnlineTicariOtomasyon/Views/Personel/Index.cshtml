@@ -1,0 +1,94 @@
+﻿@using MvcOnlineTicariOtomasyon.Models.Siniflar
+@model List<Personel>
+
+@{
+    ViewBag.Title = "Personel Yönetimi";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <!-- Arama Formu -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            @using (Html.BeginForm("Index", "Personel", FormMethod.Get, new { @class = "form-inline" }))
+            {
+                <div class="input-group">
+                    @Html.TextBox("p", null, new { @class = "form-control", @placeholder = "Personel Adı Ara..." })
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa fa-search"></i> Ara
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col-md-6 text-right">
+            @if (User.IsInRole("A")) {
+                <a href="/Personel/PersonelEkle" class="btn btn-info"><i class="fa fa-plus"></i> Yeni Personel Ekle</a>
+            }
+        </div>
+    </div>
+
+    <!-- Personel Tablosu -->
+    <div class="card">
+        <div class="card-body">
+            <table id="personelTable" class="table table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Ad</th>
+                        <th>Soyad</th>
+                        <th>Görsel</th>
+                        <th>Departman</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var y in Model)
+                    {
+                        <tr>
+                            <td class="text-center">@y.PersonelId</td>
+                            <td>@y.PersonelAd</td>
+                            <td>@y.PersonelSoyad</td>
+                            <td><img src="@y.PersonelGorsel" alt="Personel Görseli" style="max-width: 50px;" /></td>
+                            <td>@y.Departman.DepartmanAd</td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <a href="/Departman/DepartmanPersonelSatis/@y.PersonelId" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-history"></i> Satışlar
+                                    </a>
+                                    @if (User.IsInRole("A"))
+                                    {
+                                        <a href="/Personel/PersonelGetir/@y.PersonelId" class="btn btn-sm btn-warning">
+                                            <i class="fa fa-edit"></i> Güncelle
+                                        </a>
+                                    }
+                                    </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#personelTable').DataTable({
+                "language": { "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Turkish.json" },
+                "pageLength": 10,
+                "order": [[1, "asc"]] // Adına göre sırala
+            });
+        });
+    </script>
+}
+
+@section styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+}

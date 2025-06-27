@@ -1,0 +1,212 @@
+﻿@model MvcOnlineTicariOtomasyon.Controllers.SatisViewModel
+@{
+    ViewBag.Title = "Yeni Satış";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2>Yeni Satış</h2>
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+    <form id="satisForm" method="post" action="/Satis/YeniSatis">
+        <!-- Hidden fields for Fatura -->
+        <input type="hidden" name="FaturaSeriNo" value="@(DateTime.Now.ToString("yyyyMMdd"))" />
+        <input type="hidden" name="FaturaSıraNo" value="@(Guid.NewGuid().ToString().Substring(0, 6))" />
+        <input type="hidden" name="Tarih" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+        <input type="hidden" name="Saat" value="@DateTime.Now.ToString("HH:mm")" />
+        <input type="hidden" name="VergiDairesi" value="" />
+
+        <!-- Cari ve Personel -->
+        <div class="form-group">
+            @Html.Label("Cari")
+            @Html.DropDownList("CariId", (List<SelectListItem>)ViewBag.dgr2, "Seçiniz", new { @class = "form-control", @required = "required", @Value = Model?.CariId })
+        </div>
+        <div class="form-group">
+            @Html.Label("Personel")
+            @Html.DropDownList("PersonelId", (List<SelectListItem>)ViewBag.dgr3, "Seçiniz", new { @class = "form-control", @required = "required", @Value = Model?.PersonelId })
+        </div>
+
+        <!-- Ürün Tablosu -->
+        <table id="urunTable" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Ürün</th>
+                    <th>Birim</th>
+                    <th>Miktar</th>
+                    <th>Birim Fiyat (₺)</th>
+                    <th>Toplam (₺)</th>
+                    <th>İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model?.Kalemler != null && Model.Kalemler.Any())
+                {
+                    for (int i = 0; i < Model.Kalemler.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DropDownList("Kalemler[" + i + "].UrunId", (List<SelectListItem>)ViewBag.dgr1, "Seçiniz", new { @class = "form-control urun-select", @data_index = i, @Value = Model.Kalemler[i].UrunId })
+                            </td>
+                            <td><input type="text" class="form-control birim" name="Kalemler[@i].Birim" value="@Model.Kalemler[i].Birim" readonly /></td>
+                            <td><input type="number" step="0.01" min="0" class="form-control miktar" name="Kalemler[@i].Miktar" value="@Model.Kalemler[i].Miktar.ToString("N2")" oninput="calculateRowTotal(@i)" /></td>
+                            <td><input type="number" step="0.01" class="form-control fiyat" name="Kalemler[@i].BirimFiyat" value="@Model.Kalemler[i].BirimFiyat.ToString("N2")" oninput="calculateRowTotal(@i)" readonly /></td>
+                            <td><input type="text" class="form-control toplam" name="Kalemler[@i].Tutar" value="@Model.Kalemler[i].Tutar.ToString("N2")" readonly /></td>
+                            <td><button type="button" class="btn btn-danger remove-row">Sil</button></td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td>
+                            @Html.DropDownList("Kalemler[0].UrunId", (List<SelectListItem>)ViewBag.dgr1, "Seçiniz", new { @class = "form-control urun-select", @data_index = "0" })
+                        </td>
+                        <td><input type="text" class="form-control birim" name="Kalemler[0].Birim" readonly /></td>
+                        <td><input type="number" step="0.01" min="0" class="form-control miktar" name="Kalemler[0].Miktar" oninput="calculateRowTotal(0)" /></td>
+                        <td><input type="number" step="0.01" class="form-control fiyat" name="Kalemler[0].BirimFiyat" oninput="calculateRowTotal(0)" readonly /></td>
+                        <td><input type="text" class="form-control toplam" name="Kalemler[0].Tutar" readonly /></td>
+                        <td><button type="button" class="btn btn-danger remove-row">Sil</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-success" id="addRow">Ürün Ekle</button>
+        <br /><br />
+        <h4>Genel Toplam: <span id="genelToplam">0.00</span> ₺</h4>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">Satış Yap ve Fatura Oluştur</button>
+    </form>
+</div>
+
+<!-- Onay Popup -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Satışı Onayla</h5>
+                <button type="button" class="close" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                <p>Toplam Tutar: <strong><span id="modalToplam">0.00</span> ₺</strong></p>
+                <p>Bu satışı tamamlamak ve fatura oluşturmak istediğinize emin misiniz?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-primary" id="confirmSale">Onayla</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let rowIndex = @(Model?.Kalemler != null ? Model.Kalemler.Count : 0);
+
+        // Ürün ekleme
+        $("#addRow").click(function () {
+            let newRow = `
+                <tr>
+                    <td>
+                        <select class="form-control urun-select" name="Kalemler[${rowIndex}].UrunId" data-index="${rowIndex}">
+                            <option value="">Seçiniz</option>
+                            @foreach (var item in (List<SelectListItem>)ViewBag.dgr1)
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        </select>
+                    </td>
+                    <td><input type="text" class="form-control birim" name="Kalemler[${rowIndex}].Birim" readonly /></td>
+                    <td><input type="number" step="0.01" min="0" class="form-control miktar" name="Kalemler[${rowIndex}].Miktar" oninput="calculateRowTotal(${rowIndex})" /></td>
+                    <td><input type="number" step="0.01" class="form-control fiyat" name="Kalemler[${rowIndex}].BirimFiyat" oninput="calculateRowTotal(${rowIndex})" readonly /></td>
+                    <td><input type="text" class="form-control toplam" name="Kalemler[${rowIndex}].Tutar" readonly /></td>
+                    <td><button type="button" class="btn btn-danger remove-row">Sil</button></td>
+                </tr>`;
+            $("#urunTable tbody").append(newRow);
+            rowIndex++;
+        });
+
+        // Satır silme
+        $(document).on("click", ".remove-row", function () {
+            if ($("#urunTable tbody tr").length > 1) {
+                $(this).closest("tr").remove();
+                calculateGrandTotal();
+            }
+        });
+
+        // Ürün seçildiğinde birim ve fiyat getir
+        $(document).on("change", ".urun-select", function () {
+            let index = $(this).data("index");
+            let urunId = $(this).val();
+            if (urunId) {
+                $.ajax({
+                    url: "/Fatura/GetProductPrice",
+                    data: { id: urunId },
+                    success: function (data) {
+                        $(`input[name='Kalemler[${index}].BirimFiyat']`).val(data.price.toFixed(2));
+                        $.ajax({
+                            url: "/Satis/GetProductUnit",
+                            data: { id: urunId },
+                            success: function (unitData) {
+                                $(`input[name='Kalemler[${index}].Birim']`).val(unitData.unit);
+                                calculateRowTotal(index);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        // Satır toplamını hesapla
+        function calculateRowTotal(index) {
+            let miktar = parseFloat($(`input[name='Kalemler[${index}].Miktar']`).val()) || 0;
+            let fiyat = parseFloat($(`input[name='Kalemler[${index}].BirimFiyat']`).val()) || 0;
+            let toplam = miktar * fiyat;
+            $(`input[name='Kalemler[${index}].Tutar']`).val(toplam.toFixed(2));
+            calculateGrandTotal();
+        }
+
+        // Genel toplamı hesapla
+        function calculateGrandTotal() {
+            let genelToplam = 0;
+            $(".toplam").each(function () {
+                genelToplam += parseFloat($(this).val()) || 0;
+            });
+            $("#genelToplam").text(genelToplam.toFixed(2));
+            $("#modalToplam").text(genelToplam.toFixed(2));
+        }
+
+        // Satışı onayla
+        $("#confirmSale").click(function () {
+            $("#satisForm").submit();
+        });
+
+        // Sayfa yüklendiğinde toplamları hesapla
+        $(document).ready(function () {
+            calculateGrandTotal();
+            $(".urun-select").each(function () {
+                let index = $(this).data("index");
+                let urunId = $(this).val();
+                if (urunId) {
+                    $.ajax({
+                        url: "/Fatura/GetProductPrice",
+                        data: { id: urunId },
+                        success: function (data) {
+                            $(`input[name='Kalemler[${index}].BirimFiyat']`).val(data.price.toFixed(2));
+                            $.ajax({
+                                url: "/Satis/GetProductUnit",
+                                data: { id: urunId },
+                                success: function (unitData) {
+                                    $(`input[name='Kalemler[${index}].Birim']`).val(unitData.unit);
+                                    calculateRowTotal(index);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

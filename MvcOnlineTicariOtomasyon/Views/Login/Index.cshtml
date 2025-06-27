@@ -1,0 +1,483 @@
+﻿
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Mvc5 Online Ticari Otomasyon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="Project Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template, Smartphone Compatible web template" />
+
+    <!-- Google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&subset=latin-ext" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo a {
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: 700;
+            font-family: 'Raleway', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .social {
+            display: flex;
+            list-style: none;
+            gap: 15px;
+        }
+
+        .social li a {
+            color: white;
+            font-size: 18px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social li a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Main Content */
+        .register {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .register-full {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 20px;
+            gap: 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .register-left {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .register-left h1 {
+            color: white;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            font-family: 'Raleway', sans-serif;
+            line-height: 1.2;
+        }
+
+        .register-left h2 {
+            color: #64b5f6;
+            font-size: 28px;
+            font-weight: 400;
+            margin-bottom: 30px;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        .register-left p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .content3 ul {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+
+        .content3 ul li a {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .content3 ul li a:hover,
+        .content3 ul li a.read {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Right Side */
+        .register-right {
+            flex: 1;
+            max-width: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .register-in {
+            text-align: center;
+        }
+
+        .book {
+            background: linear-gradient(45deg, #42a5f5, #478ed1);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(66, 165, 245, 0.3);
+        }
+
+        .book:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(66, 165, 245, 0.4);
+            background: linear-gradient(45deg, #1e88e5, #1976d2);
+        }
+
+        /* Copyright */
+        .agile-copyright {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        /* Popup Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .book-form {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: scale(0.8);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .book-form {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .login-form h3 {
+            color: #333;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 30px;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #42a5f5;
+            background: white;
+            box-shadow: 0 0 10px rgba(66, 165, 245, 0.2);
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+        }
+
+        .text-danger {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            background: linear-gradient(45deg, #42a5f5, #478ed1);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input[type="submit"]:hover {
+            background: linear-gradient(45deg, #1e88e5, #1976d2);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(66, 165, 245, 0.3);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        /* Responsive */
+        media (max-width: 768px) {
+            .register-full {
+                flex-direction: column;
+                gap: 30px;
+                text-align: center;
+            }
+
+            .register-left h1 {
+                font-size: 36px;
+            }
+
+            .register-left h2 {
+                font-size: 24px;
+            }
+
+            .header {
+                padding: 15px 20px;
+            }
+
+            .header .logo a {
+                font-size: 20px;
+            }
+
+            .social {
+                gap: 10px;
+            }
+
+            .social li a {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+
+            .content3 ul {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+
+        keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- section -->
+    <section class="register">
+        <div class="header">
+            <div class="logo">
+                <a href="#">GİRİŞ FORMU</a>
+            </div>
+            <div class="social">
+                <li><a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a></li>
+                <li><a href="https://www.twitter.com/"><i class="fab fa-twitter"></i></a></li>
+                <li><a href="https://www.linkedin.com/in/yunus-emre-karabay%C4%B1r-b10811296/"><i class="fab fa-linkedin-in"></i></a></li>
+                <li><a href="https://github.com/ynsemr46"><i class="fab fa-github"></i></a></li>
+            </div>
+        </div>
+
+        <div class="register-full">
+            <div class="register-left">
+                <div class="register">
+                    <h1>Online Ticari Otomasyon</h1>
+                    <h2>Yunus Emre Karabayır</h2>
+                    <p>
+                        Admin/Yönetici ve Personel kişisel sayfası olmak üzere 2 tane temel yapımız bulunmaktadır. Kullanıcı adı ve şifrenizle sağ taraftan giriş yapın.
+                    </p>
+                    <div class="content3">
+                        <ul>
+                            <li><a href="#">Firmalar</a></li>
+                            <li><a href="#" class="read">Ürünlerimiz</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="register-right">
+                <div class="register-in">
+                    <a class="book" href="#" onclick="openModal()">GİRİŞ »</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- copyright -->
+        <p class="agile-copyright">© 2025 Project. Tüm Hakları Saklıdır.</p>
+        <!-- //copyright -->
+    </section>
+    <!-- //section -->
+    <!-- Modal Popup -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="book-form">
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+            <div class="login-form login-form-left">
+                <div class="agile-row">
+                    <h3>Giriş Formu</h3>
+                    <div class="login-agileits-top">
+                        @using (Html.BeginForm("Index", "Login", FormMethod.Post))
+                        {
+                            <div class="form-group">
+                                <label>Kullanıcı Adı</label>
+                                <input type="text" name="KullaniciAd" class="form-control" required="required" maxlength="10" pattern="[a-zA-Z0-9]+" title="Kullanıcı adı sadece harf ve rakam içerebilir." />
+                                <span class="text-danger field-validation-error" data-valmsg-for="KullaniciAd"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>Şifre</label>
+                                <input type="password" name="Sifre" class="form-control" required="required" maxlength="30" minlength="6" />
+                                <span class="text-danger field-validation-error" data-valmsg-for="Sifre"></span>
+                            </div>
+                            if (ViewBag.Error != null)
+                            {
+                                <div class="alert alert-danger">@ViewBag.Error</div>
+                            }
+                            <input type="submit" value="Giriş Yap">
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('loginModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('loginModal').classList.remove('active');
+        }
+
+        // Modal dışına tıklayınca kapat
+        document.getElementById('loginModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // ESC tuşu ile kapat
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // URL çubuğunu gizle (mobil için)
+        window.addEventListener("load", function () {
+            setTimeout(function () {
+                window.scrollTo(0, 1);
+            }, 0);
+        });
+    </script>
+</body>
+</html>

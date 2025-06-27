@@ -1,0 +1,323 @@
+﻿@{
+    ViewBag.Title = "Kontrol Paneli";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="container-fluid mt-4">
+    <h1 class="mb-4">İstatistikler</h1>
+
+    <!-- Metrik Kartları -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Toplam Cari</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.ToplamCari</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Toplam Ürün</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.ToplamUrun</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-boxes fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Toplam Personel</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.ToplamPersonel</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-tie fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Toplam Kategori</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.ToplamKategori</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-folder fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Toplam Stok</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.ToplamStok</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-warehouse fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Kritik Stok</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.KritikStok</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Toplam Gelir</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.ToplamGelir ₺</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-coins fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Toplam Gider</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.ToplamGider ₺</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-money-bill-wave fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Kasa Bakiyesi</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.KasaBakiyesi ₺</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-cash-register fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Bugünkü Satış</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.BugunSatisTutar ₺</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Bugünkü Tahsilat</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.BugunTahsilat ₺</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">En Çok Satan Ürün</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.EnCokSatanUrun</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-star fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grafikler -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Kategori Dağılımı</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="kategoriGrafik"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Haftalık Satış Trendi</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="satisGrafik"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Aylık Gelir ve Gider Karşılaştırması</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="gelirGiderGrafik"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script>
+        // Kategori Dağılımı Pasta Grafiği
+        const kategoriVeri = @Html.Raw(Json.Encode(ViewBag.KategoriDagilim));
+        new Chart(document.getElementById('kategoriGrafik'), {
+            type: 'pie',
+            data: {
+                labels: kategoriVeri.map(x => x.Kategori),
+                datasets: [{
+                    data: kategoriVeri.map(x => x.Sayi),
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'Kategori Dağılımı' }
+                }
+            }
+        });
+
+        // Haftalık Satış Çizgi Grafiği
+        const satisVeri = @Html.Raw(Json.Encode(ViewBag.HaftalikSatis));
+        new Chart(document.getElementById('satisGrafik'), {
+            type: 'line',
+            data: {
+                labels: satisVeri.map(x => new Date(x.Tarih).toLocaleDateString('tr-TR')),
+                datasets: [{
+                    label: 'Satış Tutarı (₺)',
+                    data: satisVeri.map(x => x.Toplam),
+                    borderColor: '#4e73df',
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'Haftalık Satış Trendi' }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Aylık Gelir vs Gider Çubuk Grafiği
+        const finansalVeri = @Html.Raw(Json.Encode(ViewBag.AylikFinansal));
+        const tarihler = [...new Set([...finansalVeri.Gelir.map(x => x.Tarih), ...finansalVeri.Gider.map(x => x.Tarih)])]
+            .sort((a, b) => new Date(a) - new Date(b))
+            .map(d => new Date(d).toLocaleDateString('tr-TR'));
+        new Chart(document.getElementById('gelirGiderGrafik'), {
+            type: 'bar',
+            data: {
+                labels: tarihler,
+                datasets: [
+                    {
+                        label: 'Gelir (₺)',
+                        data: tarihler.map(d => {
+                            const item = finansalVeri.Gelir.find(x => new Date(x.Tarih).toLocaleDateString('tr-TR') === d);
+                            return item ? item.Toplam : 0;
+                        }),
+                        backgroundColor: '#1cc88a'
+                    },
+                    {
+                        label: 'Gider (₺)',
+                        data: tarihler.map(d => {
+                            const item = finansalVeri.Gider.find(x => new Date(x.Tarih).toLocaleDateString('tr-TR') === d);
+                            return item ? item.Toplam : 0;
+                        }),
+                        backgroundColor: '#e74a3b'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'Aylık Gelir vs Gider' }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
+}

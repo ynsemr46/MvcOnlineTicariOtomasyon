@@ -2182,6 +2182,12 @@
     <Content Include="Content\Site.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="Image\Ekran görüntüsü 2025-06-27 130641.png" />
+    <Content Include="Image\Ekran görüntüsü 2025-06-27 130704.png" />
+    <Content Include="Image\Ekran görüntüsü 2025-06-27 130718.png" />
+    <Content Include="Image\Ekran görüntüsü 2025-06-27 130754.png" />
+    <Content Include="Image\Ekran görüntüsü 2025-06-27 130803.png" />
+    <Content Include="Image\Ekran görüntüsü 2025-06-27 130823.png" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -2742,7 +2748,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Image\" />
     <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>

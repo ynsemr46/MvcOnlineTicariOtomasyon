@@ -120,7 +120,6 @@ Update-Database
 ## 👨‍💻 Geliştirici
 
 - **Ad Soyad:** Yunus Emre Karabayır  
-- **Öğrenci No:** 23300031335  
 - **GitHub:** [github.com/ynsemr46](https://github.com/ynsemr46)
 
 ---

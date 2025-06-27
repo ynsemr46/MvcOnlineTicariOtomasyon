@@ -1,120 +1,135 @@
+
 # 🧾 MvcOnlineTicariOtomasyon
 
-Yunus Emre Karabayır tarafından geliştirilen bu proje, **ASP.NET MVC** teknolojisi ve **Microsoft SQL Server** veritabanı kullanılarak oluşturulmuş, çok yönlü bir **Online Ticari Otomasyon Sistemidir**.
+Yunus Emre Karabayır tarafından geliştirilen bu proje, **ASP.NET MVC** ve **Microsoft SQL Server** teknolojileriyle oluşturulmuş, çok yönlü bir **Online Ticari Otomasyon Sistemi**dir.
 
-## 🎯 Projenin Amacı
+---
 
-Bu sistem; küçük ve orta ölçekli işletmelerin günlük ticari faaliyetlerini **dijital ortamda yönetmesini** sağlamak amacıyla geliştirilmiştir. Proje, aşağıdaki temel işlevleri kapsar:
+## 🎯 Amaç
 
-- Ürün ve stok takibi
-- Cari hesap yönetimi (müşteri/tedarikçi)
-- Fatura işlemleri
-- Personel ve departman takibi
-- Admin yetkilendirme sistemi
+Bu sistem, işletmelerin ticari faaliyetlerini dijital ortama taşıyarak;
+
+- Ürün ve stok takibi,
+- Cari hesap yönetimi,
+- Fatura işlemleri,
+- Departman ve personel takibi,
+- Admin yetkilendirmesi
+
+gibi işlevleri merkezi ve kullanıcı dostu bir yapı altında sunar.
 
 ---
 
 ## ⚙️ Kullanılan Teknolojiler
 
-| Katman        | Teknoloji                          |
-|---------------|------------------------------------|
-| Backend       | ASP.NET MVC (.NET Framework)       |
-| Veritabanı    | Microsoft SQL Server               |
-| ORM           | Entity Framework (Code First)      |
-| Frontend      | HTML5, CSS3, Razor View Engine     |
-| UI Framework  | Bootstrap (responsive yapı)        |
-| Ekstralar     | LINQ, Partial Views, Layout Pages  |
+| Katman     | Teknoloji                        |
+|------------|----------------------------------|
+| Backend    | ASP.NET MVC (.NET Framework)     |
+| ORM        | Entity Framework (Code First)    |
+| Veritabanı | Microsoft SQL Server             |
+| Frontend   | HTML5, CSS3, Razor View, Bootstrap |
+| Ekstra     | LINQ, Partial View, Layout Pages |
 
 ---
 
-## 🧩 Modüller & Özellikler
+## 🧩 Modüller
 
-### 🔐 Admin Paneli
-- Admin girişi ve rol yönetimi
-- Kullanıcı yetkilendirme
+- 🔐 **Admin Paneli**  
+  Giriş, rol yönetimi, kullanıcı kontrolü
 
-### 📦 Ürün ve Kategori Yönetimi
-- Ürün ekleme, düzenleme, silme
-- Kategori oluşturma ve güncelleme
-- Stok takibi ve ürün detayları
+- 📦 **Ürün/Kategori Yönetimi**  
+  Ürün ekleme, silme, stok takibi
 
-### 🏢 Departmanlar & Personel
-- Departman tanımları
-- Personel bilgileri (maaş, görev, departman)
+- 🏢 **Departman & Personel Yönetimi**  
+  Departmanlara göre personel kaydı ve görev tanımı
 
-### 👥 Cari İşlemleri
-- Müşteri ve tedarikçi kayıtları
-- Cari hesap ekstresi ve takibi
+- 👥 **Cari İşlemleri**  
+  Müşteri ve tedarikçi kayıtları, raporlama
 
-### 🧾 Fatura Yönetimi ve Satış
-- Fatura oluşturma ve ödeme durumu takibi
-- Faturaya ürün ekleme
-- Satış Yapma Ve satış Takibi
+- 🧾 **Fatura Yönetimi**  
+  Fatura oluşturma, ödeme durumu takibi
 
 ---
 
-## 🔧 Kurulum Adımları
+## 🚀 Kurulum
 
-Projenizi yerel ortamda çalıştırmak için aşağıdaki adımları izleyin:
-
-### 1️⃣ Projeyi Klonlayın
+### 1️⃣ Klonla
 
 ```bash
 git clone https://github.com/ynsemr46/MvcOnlineTicariOtomasyon.git
 cd MvcOnlineTicariOtomasyon
+```
 
-2️⃣ Visual Studio ile Açın
-MvcOnlineTicariOtomasyon.sln dosyasını Visual Studio 2019/2022 ile açın.
+### 2️⃣ Visual Studio ile Aç
 
-3️⃣ Veritabanı Bağlantısını Yapılandırın
-Web.config dosyasındaki connectionStrings bölümünü kendi SQL Server instance’ınıza göre güncelleyin:
-<connectionStrings>
-  <add name="DefaultConnection" 
-       connectionString="Data Source=.;Initial Catalog=DbOnlineTicariOtomasyon;Integrated Security=True" 
-       providerName="System.Data.SqlClient" />
-</connectionStrings>
-4️⃣ Paketleri Geri Yükleyin
-Menüden: Tools > NuGet Package Manager > Package Manager Console'a girin ve şu komutu çalıştırın:
+`MvcOnlineTicariOtomasyon.sln` dosyasını açın.
 
-powershell
-Kopyala
-Düzenle
+### 3️⃣ Bağlantı Dizesini Ayarla
+
+`Web.config` dosyasındaki connection string'i kendi SQL Server ortamınıza göre güncelleyin:
+
+```xml
+<add name="DefaultConnection" 
+     connectionString="Data Source=.;Initial Catalog=DbOnlineTicariOtomasyon;Integrated Security=True" 
+     providerName="System.Data.SqlClient" />
+```
+
+### 4️⃣ NuGet Paketlerini Güncelle
+
+```powershell
 Update-Package -reinstall
-5️⃣ Veritabanını Oluşturun
-Code First yaklaşımıyla veritabanı otomatik oluşturulacaktır.
+```
 
-Gerekirse Update-Database komutu kullanılabilir.
+### 5️⃣ Veritabanı Oluştur
 
-6️⃣ Uygulamayı Çalıştırın
-F5 ile çalıştırın, sistem varsayılan olarak http://localhost:xxxx/ üzerinden açılacaktır.
+Çalıştırıldığında EF Code First ile veritabanı otomatik oluşur. Gerekirse:
 
-📸 Ekran Görüntüleri
+```powershell
+Update-Database
+```
 
-![Ekran görüntüsü 2025-06-27 130641](https://github.com/user-attachments/assets/d9d7a726-9554-4b67-891b-7a35b9053bae)
+---
 
-![Ekran görüntüsü 2025-06-27 130704](https://github.com/user-attachments/assets/d1472947-7e9f-41e7-a1d1-eaa97076816f)
+## 📸 Ekran Görüntüleri
 
+#### 🔐 Giriş Ekranı
 
-![Ekran görüntüsü 2025-06-27 130718](https://github.com/user-attachments/assets/9acfa433-d0b6-47b9-b5fe-894248dc02b3)
+![Giriş Ekranı](https://github.com/user-attachments/assets/d9d7a726-9554-4b67-891b-7a35b9053bae)
 
+#### 📂 Kategori Yönetimi
 
-![Ekran görüntüsü 2025-06-27 130754](https://github.com/user-attachments/assets/a6a1fef1-b9b8-45e6-8d5c-7faf19dc00ca)
+![Kategori Yönetimi](https://github.com/user-attachments/assets/d1472947-7e9f-41e7-a1d1-eaa97076816f)
 
+#### 🧾 Fatura Yönetimi
 
-![Ekran görüntüsü 2025-06-27 130803](https://github.com/user-attachments/assets/6cf5a6f4-ead5-447b-8786-dc671b5110e7)
+![Fatura Yönetimi](https://github.com/user-attachments/assets/9acfa433-d0b6-47b9-b5fe-894248dc02b3)
 
+#### 📊 Satış Raporu & Grafik
 
-![Ekran görüntüsü 2025-06-27 130823](https://github.com/user-attachments/assets/2698ac93-2916-40b6-a5b4-00d42c430316)
+![Satış Raporu](https://github.com/user-attachments/assets/a6a1fef1-b9b8-45e6-8d5c-7faf19dc00ca)
 
+#### 🧑‍💼 Personel Paneli
 
+![Personel Paneli](https://github.com/user-attachments/assets/6cf5a6f4-ead5-447b-8786-dc671b5110e7)
 
-### 👨‍💻 Geliştirici
-Ad Soyad: Yunus Emre Karabayır
-Github: github.com/ynsemr46
+#### 👤 Admin Bilgileri
 
-⚠️ Lisans ve Kullanım Koşulları
-📌 Uyarı:
-Bu proje tamamen Yunus Emre Karabayır'a aittir.
-Kodlar sadece eğitim ve kişisel geliştirme amaçlı kullanılabilir.
-Herhangi bir ticari amaçla kullanılması yasaktır.
-Ticari kullanım, izinsiz çoğaltma veya satışı durumlarında hukuki işlem uygulanabilir.
+![Admin Bilgi Paneli](https://github.com/user-attachments/assets/2698ac93-2916-40b6-a5b4-00d42c430316)
+
+---
+
+## 👨‍💻 Geliştirici
+
+- **Ad Soyad:** Yunus Emre Karabayır  
+- **Öğrenci No:** 23300031335  
+- **GitHub:** [github.com/ynsemr46](https://github.com/ynsemr46)
+
+---
+
+## 📄 Lisans
+
+> 🔒 **Bu proje şahsıma aittir.**  
+> Sadece **kişisel ve eğitim amaçlı** kullanılabilir.  
+> **Herhangi bir ticari amaçla kullanılması kesinlikle yasaktır.**  
+> İzinsiz çoğaltılması, satılması veya paylaşılması durumunda yasal işlem uygulanacaktır.
+
+---
